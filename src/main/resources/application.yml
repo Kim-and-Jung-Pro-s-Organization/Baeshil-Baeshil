@@ -11,3 +11,9 @@ spring:
   sql:
     init:
       platform: mysql
+
+  jpa:
+    properties:
+      hibernate:
+        ddl-auto: update
+    generate-ddl: true
