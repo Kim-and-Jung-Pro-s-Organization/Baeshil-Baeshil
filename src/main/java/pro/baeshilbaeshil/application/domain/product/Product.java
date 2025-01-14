@@ -2,6 +2,7 @@ package pro.baeshilbaeshil.application.domain.product;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import pro.baeshilbaeshil.application.common.BaseEntity;
@@ -20,9 +21,7 @@ public class Product extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinColumn(name = "shop_id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Shop shop;
+    private Long shopId;
 
     private String name;
 
@@ -32,11 +31,14 @@ public class Product extends BaseEntity {
 
     private String imageUrl = "";
 
-    public Product(Shop shop, String name, int price) {
+    @Builder
+    private Product(Long shopId, String name, int price, int likes, String imageUrl) {
         validate(name, price);
-        this.shop = shop;
+        this.shopId = shopId;
         this.name = name;
         this.price = price;
+        this.likes = likes;
+        this.imageUrl = imageUrl;
     }
 
     private void validate(String name, int price) {

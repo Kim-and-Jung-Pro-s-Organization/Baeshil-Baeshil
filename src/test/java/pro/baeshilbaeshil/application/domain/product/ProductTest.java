@@ -8,29 +8,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class ProductTest {
 
-    @DisplayName("가게, 상품 이름, 상품 가격을 통해 상품을 생성한다.")
+    @DisplayName("가게 id, 상품 이름, 가격을 통해 상품을 생성한다.")
     @Test
     void createProduct() {
         // given
-        Shop shop = createShop();
+        Long shopId = 1L;
         String name = "상품이름";
         int price = 1000;
 
         // when
-        Product product = new Product(shop, name, price);
+        Product product = Product.builder()
+                .shopId(shopId)
+                .name(name)
+                .price(price)
+                .build();
 
         // then
-        assertThat(product.getShop()).isEqualTo(shop);
+        assertThat(product.getShopId()).isEqualTo(shopId);
         assertThat(product.getName()).isEqualTo(name);
         assertThat(product.getPrice()).isEqualTo(price);
         assertThat(product.getLikes()).isEqualTo(0);
-    }
-
-    private Shop createShop() {
-        return Shop.builder()
-                .name("가게이름")
-                .description("가게설명")
-                .address("가게주소")
-                .build();
     }
 }
