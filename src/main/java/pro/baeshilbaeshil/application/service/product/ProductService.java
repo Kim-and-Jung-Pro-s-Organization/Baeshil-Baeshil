@@ -15,8 +15,13 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-    public GetProductsResponse getProducts(Pageable pageable) {
+    public GetProductsResponse getProductsByOffset(Pageable pageable) {
         List<Product> productPage = productRepository.findAll(pageable).getContent();
+        return GetProductsResponse.of(productPage);
+    }
+
+    public GetProductsResponse getProductsByCursor(Long startId, int pageSize) {
+        List<Product> productPage = productRepository.findAllByCursor(startId, pageSize);
         return GetProductsResponse.of(productPage);
     }
 }
