@@ -1,4 +1,4 @@
-package pro.baeshilbaeshil.application.service;
+package pro.baeshilbaeshil.application.service.product;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +25,7 @@ public class DevProductService {
                 try {
                     log.info("{}개 저장 완료", cursor);
                     Thread.sleep(1000);
+
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
