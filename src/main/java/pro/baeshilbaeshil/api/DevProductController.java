@@ -11,7 +11,7 @@ public class DevProductController {
 
     private final DevProductService devProductService;
 
-    @PostMapping("/api-dev/products")
+    @PostMapping("/api-dev/v1/products")
     public void createProduct() {
         devProductService.createProducts();
     }

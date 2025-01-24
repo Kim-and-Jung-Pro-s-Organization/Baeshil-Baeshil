@@ -18,14 +18,14 @@ public class ProductController {
 
     private final ProductService productService;
 
-    @GetMapping("/api/products-offset")
+    @GetMapping("/api/v1/products-offset")
     public ResponseEntity<GetProductsResponse> getProductsByOffset(
             @PageableDefault(size = 100) Pageable pageable) {
         GetProductsResponse response = productService.getProductsByOffset(pageable);
         return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/api/products-cursor")
+    @GetMapping("/api/v1/products-cursor")
     public ResponseEntity<GetProductsResponse> getProductsByCursor(
             @RequestParam(name = "startId") Long startId,
             @RequestParam(name = "pageSize") int pageSize) {
