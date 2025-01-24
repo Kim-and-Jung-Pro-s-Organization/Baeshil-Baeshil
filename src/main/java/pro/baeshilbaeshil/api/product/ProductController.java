@@ -1,4 +1,4 @@
-package pro.baeshilbaeshil.api;
+package pro.baeshilbaeshil.api.product;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -32,12 +32,11 @@ public class Product extends BaseEntity {
     private String imageUrl = "";
 
     @Builder
-    private Product(Long shopId, String name, int price, int likes, String imageUrl) {
+    private Product(Long shopId, String name, int price, String imageUrl) {
         validate(name, price);
         this.shopId = shopId;
         this.name = name;
         this.price = price;
-        this.likes = likes;
         this.imageUrl = imageUrl;
     }
 

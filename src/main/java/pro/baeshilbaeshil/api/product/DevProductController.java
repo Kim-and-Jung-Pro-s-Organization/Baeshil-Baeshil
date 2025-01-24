@@ -1,4 +1,4 @@
-package pro.baeshilbaeshil.api;
+package pro.baeshilbaeshil.api.product;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

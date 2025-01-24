@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import pro.baeshilbaeshil.application.domain.shop.Shop;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -16,7 +17,9 @@ public class CreateShopResponse {
         this.id = id;
     }
 
-    public static CreateShopResponse of(Long id) {
-        return new CreateShopResponse(id);
+    public static CreateShopResponse of(Shop shop) {
+        return CreateShopResponse.builder()
+                .id(shop.getId())
+                .build();
     }
 }

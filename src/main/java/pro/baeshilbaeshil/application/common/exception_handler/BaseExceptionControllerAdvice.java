@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pro.baeshilbaeshil.application.common.ErrorResponse;
 import pro.baeshilbaeshil.application.common.exception.InvalidArgumentException;
+import pro.baeshilbaeshil.application.common.exception.NotFoundException;
 
 import java.time.LocalDateTime;
 
@@ -16,6 +17,12 @@ public class BaseExceptionControllerAdvice {
     @ExceptionHandler(InvalidArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleBadRequestException(InvalidArgumentException e) {
+        return ErrorResponse.create(e.getExceptionType());
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleNotFoundException(NotFoundException e) {
         return ErrorResponse.create(e.getExceptionType());
     }
 
