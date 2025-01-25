@@ -25,4 +25,14 @@ public class EventController {
         GetEventsResponse response = eventService.getActiveEvents(date);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/api/v1/events-index")
+    public ResponseEntity<GetEventsResponse> getActiveEventsByIndexRangeScan(
+            @RequestParam("date") LocalDateTime date) {
+        if (date == null) {
+            date = LocalDateTime.now();
+        }
+        GetEventsResponse response = eventService.getActiveEventsByIndexRangeScan(date);
+        return ResponseEntity.ok(response);
+    }
 }

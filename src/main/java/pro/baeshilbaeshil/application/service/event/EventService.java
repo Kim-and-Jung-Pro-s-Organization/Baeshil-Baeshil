@@ -21,4 +21,9 @@ public class EventService {
         List<Event> activeEvents = eventRepository.findActiveEvents(date);
         return GetEventsResponse.of(activeEvents);
     }
+
+    public GetEventsResponse getActiveEventsByIndexRangeScan(LocalDateTime date) {
+        List<Event> activeEvents = eventRepository.findActiveEventsByIndexRangeScan(date);
+        return GetEventsResponse.of(activeEvents);
+    }
 }

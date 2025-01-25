@@ -9,8 +9,21 @@ import java.util.List;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
 
-    @Query(value = "select * from events e " +
-            "where e.begin_time <= :date and e.end_time > :date",
+    @Query(value = """
+            select *
+            from events e
+            where e.begin_time <= :date
+              and e.end_time > :date
+            """,
             nativeQuery = true)
     List<Event> findActiveEvents(@Param("date") LocalDateTime date);
+
+    @Query(value = """
+            select /*+ index(e time_index) */ *
+            from events e
+            where e.begin_time <= :date
+              and e.end_time > :date
+            """,
+            nativeQuery = true)
+    List<Event> findActiveEventsByIndexRangeScan(@Param("date") LocalDateTime date);
 }
