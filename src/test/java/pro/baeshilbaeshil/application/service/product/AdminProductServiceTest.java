@@ -1,0 +1,48 @@
+package pro.baeshilbaeshil.application.service.product;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
+import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import pro.baeshilbaeshil.application.common.exception.NotFoundException;
+import pro.baeshilbaeshil.application.domain.shop.ShopRepository;
+import pro.baeshilbaeshil.application.service.dto.product.CreateProductRequest;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+@ActiveProfiles("test")
+@SpringBootTest
+class AdminProductServiceTest {
+
+    @Autowired
+    private AdminProductService adminProductService;
+
+    @Mock
+    private ShopRepository shopRepository;
+
+    @DisplayName("상품 등록 시, 등록된 가게가 아니라면 예외가 발생한다.")
+    @Test
+    void createProductWithNotExistingShop() {
+        // given
+        Long shopId = 1L;
+        String name = "상품이름";
+        int price = 1000;
+        String imageUrl = "http://image.url.jpg";
+
+        CreateProductRequest request = CreateProductRequest.builder()
+                .shopId(shopId)
+                .name(name)
+                .price(price)
+                .imageUrl(imageUrl)
+                .build();
+
+        BDDMockito.given(shopRepository.findById(shopId)).willReturn(null);
+
+        // when, then
+        assertThatThrownBy(() -> adminProductService.createProduct(request))
+                .isInstanceOf(NotFoundException.class);
+    }
+}

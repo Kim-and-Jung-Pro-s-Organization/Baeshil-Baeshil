@@ -38,7 +38,6 @@ public class DevProductService {
                 .name("테스트 상품" + (int) (Math.random() * 100))
                 .shopId(1L)
                 .price(10000 + (int) (Math.random() * 10000))
-                .likes((int) (Math.random() * 10000))
                 .imageUrl("https://cdn.com/kf-og-" + (int) (Math.random() * 10000) + ".png")
                 .build();
     }

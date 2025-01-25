@@ -1,4 +1,4 @@
-package pro.baeshilbaeshil.api;
+package pro.baeshilbaeshil.api.product;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,7 +11,7 @@ public class DevProductController {
 
     private final DevProductService devProductService;
 
-    @PostMapping("/api-dev/products")
+    @PostMapping("/api-dev/v1/products")
     public void createProduct() {
         devProductService.createProducts();
     }

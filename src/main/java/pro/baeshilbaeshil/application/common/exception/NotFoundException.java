@@ -6,7 +6,7 @@ import pro.baeshilbaeshil.application.common.exception_type.BaseExceptionType;
 
 @Getter
 @RequiredArgsConstructor
-public class InvalidArgumentException extends RuntimeException {
+public class NotFoundException extends RuntimeException {
 
     private final BaseExceptionType exceptionType;
 }
