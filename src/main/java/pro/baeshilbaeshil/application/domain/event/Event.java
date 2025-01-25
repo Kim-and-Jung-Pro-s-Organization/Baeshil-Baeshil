@@ -1,9 +1,6 @@
 package pro.baeshilbaeshil.application.domain.event;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,8 +13,9 @@ import java.time.LocalDateTime;
 import static pro.baeshilbaeshil.application.common.exception_type.EventExceptionType.*;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@Table(name = "events")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Event extends BaseEntity {
 
     private static final int NAME_MAX_LENGTH = 20;

@@ -16,7 +16,7 @@ public class DevProductService {
     public void createProducts() {
         int cursor = 0;
 
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 100_000; i++) {
             Product product = createProduct();
             productRepository.save(product);
             cursor++;
