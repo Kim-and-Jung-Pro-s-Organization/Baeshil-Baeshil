@@ -4,6 +4,7 @@ import com.google.common.base.CaseFormat;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Table;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,8 +22,15 @@ public class DatabaseCleanup implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         tableNames = entityManager.getMetamodel().getEntities().stream()
-                .filter(e -> e.getJavaType().getAnnotation(Entity.class) != null)
-                .map(e -> CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, e.getName()))
+                .filter(e -> e.getJavaType().isAnnotationPresent(Entity.class))
+                .map(e -> {
+                    Class<?> javaType = e.getJavaType();
+                    Table tableAnnotation = javaType.getAnnotation(Table.class);
+                    if (tableAnnotation != null && !tableAnnotation.name().isEmpty()) {
+                        return tableAnnotation.name();
+                    }
+                    return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, javaType.getSimpleName());
+                })
                 .toList();
     }
 

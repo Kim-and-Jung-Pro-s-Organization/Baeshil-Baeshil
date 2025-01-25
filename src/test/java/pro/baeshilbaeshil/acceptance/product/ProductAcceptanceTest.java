@@ -1,4 +1,4 @@
-package pro.baeshilbaeshil.acceptance;
+package pro.baeshilbaeshil.acceptance.product;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.restassured.RestAssured;
@@ -39,9 +39,9 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 가게_등록_요청() throws JsonProcessingException {
         Map<String, Object> body = new HashMap<>();
-        body.put("name", "가게이름");
-        body.put("description", "가게설명");
-        body.put("address", "가게주소");
+        body.put("name", "가게_이름");
+        body.put("description", "가게_설명");
+        body.put("address", "가게_주소");
 
         return RestAssured.given().log().all()
                 .body(objectMapper.writeValueAsString(body))

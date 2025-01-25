@@ -14,7 +14,7 @@ class ProductTest {
     void createProduct() {
         // given
         Long shopId = 1L;
-        String name = "상품이름";
+        String name = "상품_이름";
         int price = 1000;
         String imageUrl = "http://image.url.jpg";
 
@@ -59,7 +59,7 @@ class ProductTest {
     void createProductWithPriceUnderZero() {
         // given
         Long shopId = 1L;
-        String name = "상품이름";
+        String name = "상품_이름";
         int price = -1;
         String imageUrl = "http://image.url.jpg";
 
