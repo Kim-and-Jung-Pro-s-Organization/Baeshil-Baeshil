@@ -1,6 +1,6 @@
 spring:
   application:
-    name=baeshil-baeshil
+    name: baeshil-baeshil
 
   datasource:
     url: ${DATASOURCE_URL}
