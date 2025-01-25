@@ -13,9 +13,9 @@ class ShopTest {
     @Test
     void createShop() {
         // given
-        String name = "가게이름";
-        String description = "가게설명";
-        String address = "가게주소";
+        String name = "가게_이름";
+        String description = "가게_설명";
+        String address = "가게_주소";
 
         // when
         Shop shop = Shop.builder()
@@ -35,8 +35,8 @@ class ShopTest {
     void createShopWithNameLengthOver20() {
         // given
         String name = "12345".repeat(4) + "1";
-        String description = "가게설명";
-        String address = "가게주소";
+        String description = "가게_설명";
+        String address = "가게_주소";
 
         // when, then
         assertThatThrownBy(() -> Shop.builder()
@@ -51,9 +51,9 @@ class ShopTest {
     @Test
     void createShopWithDescriptionLengthOver150() {
         // given
-        String name = "가게이름";
+        String name = "가게_이름";
         String description = "12345".repeat(30) + "1";
-        String address = "가게주소";
+        String address = "가게_주소";
 
         // when, then
         assertThatThrownBy(() -> Shop.builder()
@@ -68,8 +68,8 @@ class ShopTest {
     @Test
     void createShopWithAddressLengthOver100() {
         // given
-        String name = "가게이름";
-        String description = "가게설명";
+        String name = "가게_이름";
+        String description = "가게_설명";
         String address = "12345".repeat(20) + "1";
 
         // when, then

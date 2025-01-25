@@ -1,4 +1,4 @@
-package pro.baeshilbaeshil.acceptance;
+package pro.baeshilbaeshil.acceptance.shop;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.restassured.RestAssured;

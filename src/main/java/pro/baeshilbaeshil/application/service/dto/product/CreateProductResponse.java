@@ -1,10 +1,13 @@
 package pro.baeshilbaeshil.application.service.dto.product;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import pro.baeshilbaeshil.application.domain.product.Product;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CreateProductResponse {
 
     private Long id;

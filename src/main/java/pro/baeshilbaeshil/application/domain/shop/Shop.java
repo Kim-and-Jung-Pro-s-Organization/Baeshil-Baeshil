@@ -27,9 +27,7 @@ public class Shop extends BaseEntity {
     private Long id;
 
     private String name;
-
     private String description;
-
     private String address;
 
     @Builder

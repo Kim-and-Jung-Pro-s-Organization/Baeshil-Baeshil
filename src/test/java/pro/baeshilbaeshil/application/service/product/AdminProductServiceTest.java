@@ -3,25 +3,17 @@ package pro.baeshilbaeshil.application.service.product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import pro.baeshilbaeshil.application.common.exception.NotFoundException;
-import pro.baeshilbaeshil.application.domain.shop.ShopRepository;
 import pro.baeshilbaeshil.application.service.dto.product.CreateProductRequest;
+import pro.baeshilbaeshil.common.ServiceTest;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@ActiveProfiles("test")
-@SpringBootTest
-class AdminProductServiceTest {
+class AdminProductServiceTest extends ServiceTest {
 
     @Autowired
     private AdminProductService adminProductService;
-
-    @Mock
-    private ShopRepository shopRepository;
 
     @DisplayName("상품 등록 시, 등록된 가게가 아니라면 예외가 발생한다.")
     @Test

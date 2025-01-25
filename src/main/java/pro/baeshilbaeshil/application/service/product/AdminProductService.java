@@ -23,7 +23,8 @@ public class AdminProductService {
     @Transactional
     public CreateProductResponse createProduct(CreateProductRequest request) {
         Long shopId = request.getShopId();
-        shopRepository.findById(shopId).orElseThrow(() -> new NotFoundException(NO_SUCH_SHOP));
+        shopRepository.findById(shopId)
+                .orElseThrow(() -> new NotFoundException(NO_SUCH_SHOP));
 
         Product product = Product.builder()
                 .shopId(shopId)
