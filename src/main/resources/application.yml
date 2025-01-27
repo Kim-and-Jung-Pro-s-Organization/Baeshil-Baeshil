@@ -18,6 +18,10 @@ spring:
         format_sql: true
         ddl-auto: update
 
+  data.redis:
+    host: localhost
+    port: 6379
+
 management:
   endpoints:
     web:
@@ -28,8 +32,3 @@ server:
   tomcat:
     mbeanregistry:
       enabled: true
-
-#logging:
-#  level:
-#    org.hibernate.SQL: debug
-#    org.hibernate.orm.jdbc.bind: trace

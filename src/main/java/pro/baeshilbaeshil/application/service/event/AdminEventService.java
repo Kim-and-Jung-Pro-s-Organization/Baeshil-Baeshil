@@ -17,8 +17,10 @@ import static pro.baeshilbaeshil.application.common.exception_type.ProductExcept
 @Service
 public class AdminEventService {
 
-    private final ProductRepository productRepository;
+    private final EventCacheService eventCacheService;
     private final EventRepository eventRepository;
+
+    private final ProductRepository productRepository;
 
     @Transactional
     public CreateEventResponse createEvent(CreateEventRequest request) {
@@ -36,6 +38,7 @@ public class AdminEventService {
                 .build();
 
         Event savedEvent = eventRepository.save(event);
+        eventCacheService.cacheEvent(savedEvent);
         return CreateEventResponse.of(savedEvent);
     }
 }

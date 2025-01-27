@@ -9,6 +9,7 @@ import pro.baeshilbaeshil.application.common.BaseEntity;
 import pro.baeshilbaeshil.application.common.exception.InvalidArgumentException;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import static pro.baeshilbaeshil.application.common.exception_type.EventExceptionType.*;
 
@@ -65,5 +66,23 @@ public class Event extends BaseEntity {
         if (beginTime == null || endTime == null || beginTime.isAfter(endTime)) {
             throw new InvalidArgumentException(INVALID_EVENT_TIME);
         }
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null || getClass() != object.getClass()) return false;
+        Event event = (Event) object;
+        return Objects.equals(id, event.id) &&
+                Objects.equals(productId, event.productId) &&
+                Objects.equals(name, event.name) &&
+                Objects.equals(description, event.description) &&
+                Objects.equals(imageUrl, event.imageUrl) &&
+                Objects.equals(beginTime, event.beginTime) &&
+                Objects.equals(endTime, event.endTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, productId, name, description, imageUrl, beginTime, endTime);
     }
 }
