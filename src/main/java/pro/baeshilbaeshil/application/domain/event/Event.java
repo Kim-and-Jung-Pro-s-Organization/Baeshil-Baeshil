@@ -52,6 +52,22 @@ public class Event extends BaseEntity {
         this.endTime = endTime;
     }
 
+    public void update(
+            Long productId,
+            String name,
+            String description,
+            String imageUrl,
+            LocalDateTime beginTime,
+            LocalDateTime endTime) {
+        validate(name, description, beginTime, endTime);
+        this.productId = productId;
+        this.name = name;
+        this.description = description;
+        this.imageUrl = imageUrl;
+        this.beginTime = beginTime;
+        this.endTime = endTime;
+    }
+
     private void validate(
             String name,
             String description,
@@ -63,7 +79,7 @@ public class Event extends BaseEntity {
         if (description == null || description.isEmpty() || description.length() > DESCRIPTION_MAX_LENGTH) {
             throw new InvalidArgumentException(INVALID_EVENT_DESCRIPTION);
         }
-        if (beginTime == null || endTime == null || beginTime.isAfter(endTime)) {
+        if (beginTime == null || endTime == null || beginTime.isEqual(endTime) || endTime.isBefore(beginTime)) {
             throw new InvalidArgumentException(INVALID_EVENT_TIME);
         }
     }

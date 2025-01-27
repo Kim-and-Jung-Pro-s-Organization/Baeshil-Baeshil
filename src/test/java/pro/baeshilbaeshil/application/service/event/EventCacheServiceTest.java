@@ -1,6 +1,5 @@
 package pro.baeshilbaeshil.application.service.event;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +27,6 @@ class EventCacheServiceTest extends ServiceTest {
     private EventRepository eventRepository;
 
     @BeforeEach
-    @AfterEach
     void clearCache() {
         Cache cache = cacheManager.getCache(RedisCacheName.EVENT);
         if (cache == null) {

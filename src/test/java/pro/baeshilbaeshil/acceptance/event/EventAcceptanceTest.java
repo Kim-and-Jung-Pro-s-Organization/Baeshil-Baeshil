@@ -30,17 +30,67 @@ public class EventAcceptanceTest extends AcceptanceTest {
         String name = "이벤트_이름";
         String description = "이벤트_설명";
         String imageUrl = "http://image.url.jpg";
-        LocalDateTime beginTime = LocalDateTime.now();
-        LocalDateTime endTime = LocalDateTime.now().plusDays(1);
+        LocalDateTime date = LocalDateTime.of(2025, 1, 1, 0, 0, 0);
+        LocalDateTime beginTime = date.minusMonths(1);
+        LocalDateTime endTime = date.plusMonths(1);
 
         // when
-        ExtractableResponse<Response> response = 이벤트_등록_요청(productId, name, description, imageUrl, beginTime, endTime);
+        ExtractableResponse<Response> response = 이벤트_등록_요청(
+                productId,
+                name,
+                description,
+                imageUrl,
+                beginTime,
+                endTime);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
         CreateProductResponse createProductResponse = response.as(CreateProductResponse.class);
         assertThat(createProductResponse.getId()).isNotNull();
+    }
+
+    @DisplayName("이벤트를 수정한다.")
+    @Test
+    void updateEvent() throws JsonProcessingException {
+        // given
+        Long shopId = 가게_등록_요청().as(CreateShopResponse.class).getId();
+        Long productId = 상품_등록_요청(shopId).as(CreateProductResponse.class).getId();
+
+        String name = "이벤트_이름";
+        String description = "이벤트_설명";
+        String imageUrl = "http://image.url.jpg";
+        LocalDateTime date = LocalDateTime.of(2025, 1, 1, 0, 0, 0);
+        LocalDateTime beginTime = date.minusMonths(1);
+        LocalDateTime endTime = date.plusMonths(1);
+
+        Long eventId = 이벤트_등록_요청(
+                productId,
+                name,
+                description,
+                imageUrl,
+                beginTime,
+                endTime)
+                .as(CreateProductResponse.class).getId();
+
+        String updatedName = "수정된_이벤트_이름";
+        String updatedDescription = "수정된_이벤트_설명";
+        String updatedImageUrl = "http://updated.image.url.jpg";
+        LocalDateTime updatedBeginTime = date.minusMonths(2);
+        LocalDateTime updatedEndTime = date.plusMonths(2);
+
+        // when
+        ExtractableResponse<Response> result = 이벤트_수정_요청(
+                eventId,
+                productId,
+                updatedName,
+                updatedDescription,
+                updatedImageUrl,
+                updatedBeginTime,
+                updatedEndTime);
+
+        // then
+        assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     private ExtractableResponse<Response> 가게_등록_요청() throws JsonProcessingException {
@@ -92,6 +142,32 @@ public class EventAcceptanceTest extends AcceptanceTest {
                 .body(objectMapper.writeValueAsString(body))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api-admin/v1/events")
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> 이벤트_수정_요청(
+            Long eventId,
+            Long productId,
+            String name,
+            String description,
+            String imageUrl,
+            LocalDateTime beginTime,
+            LocalDateTime endTime) throws JsonProcessingException {
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("id", eventId);
+        body.put("productId", productId);
+        body.put("name", name);
+        body.put("description", description);
+        body.put("imageUrl", imageUrl);
+        body.put("beginTime", beginTime);
+        body.put("endTime", endTime);
+
+        return RestAssured.given().log().all()
+                .body(objectMapper.writeValueAsString(body))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().put("/api-admin/v1/events")
                 .then().log().all()
                 .extract();
     }
