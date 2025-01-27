@@ -8,7 +8,7 @@ import pro.baeshilbaeshil.application.domain.event.Event;
 @RequiredArgsConstructor
 public enum RedisCache {
 
-    EVENT(RedisCacheName.EVENT, null, Event.class);
+    EVENTS(RedisCacheName.EVENTS, null, Event.class);
 
     private final String cacheName;
     private final Long expiredAfterWrite;

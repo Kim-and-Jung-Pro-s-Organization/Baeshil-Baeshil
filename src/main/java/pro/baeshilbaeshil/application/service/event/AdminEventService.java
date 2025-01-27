@@ -40,7 +40,7 @@ public class AdminEventService {
                 .build();
 
         Event savedEvent = eventRepository.save(event);
-        eventCacheService.cacheEvent(savedEvent);
+        eventCacheService.cacheEvents();
         return CreateEventResponse.of(savedEvent);
     }
 
@@ -60,7 +60,7 @@ public class AdminEventService {
                 request.getEndTime());
 
         eventRepository.save(event);
-        eventCacheService.cacheEvent(event);
+        eventCacheService.cacheEvents();
     }
 
     private void validateProductId(Long productId) {

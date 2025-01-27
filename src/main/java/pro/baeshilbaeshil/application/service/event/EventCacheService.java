@@ -8,29 +8,54 @@ import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pro.baeshilbaeshil.application.domain.event.Event;
+import pro.baeshilbaeshil.application.domain.event.EventRepository;
 import pro.baeshilbaeshil.config.RedisCacheName;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
 public class EventCacheService {
 
+    public static final String EVENTS_KEY = "events";
+
     @Autowired
     private final CacheManager cacheManager;
+
+    @Autowired
+    private final EventRepository eventRepository;
 
     @Autowired
     private final ObjectMapper objectMapper;
 
     @Transactional
-    public void cacheEvent(Event event) {
-        Cache cache = cacheManager.getCache(RedisCacheName.EVENT);
+    public void cacheEvents() {
+        Cache cache = cacheManager.getCache(RedisCacheName.EVENTS);
         if (cache == null) {
-            throw new IllegalStateException("Cache not found: " + RedisCacheName.EVENT);
+            throw new IllegalStateException("Cache not found: " + RedisCacheName.EVENTS);
         }
-        cache.put(event.getId(), event);
+        cache.evict(EVENTS_KEY);
+
+        List<Event> events = eventRepository.findAll();
+        cache.put(EVENTS_KEY, events);
     }
 
-    public Event convertToEvent(Object value) {
-        return objectMapper.convertValue(value, Event.class);
+    public List<Event> getEvents() {
+        Cache cache = cacheManager.getCache(RedisCacheName.EVENTS);
+        if (cache == null) {
+            throw new IllegalStateException("Cache not found: " + RedisCacheName.EVENTS);
+        }
+        Cache.ValueWrapper valueWrapper = cache.get(EVENTS_KEY);
+        if (valueWrapper == null) {
+            throw new IllegalStateException("Cache not found: " + EVENTS_KEY);
+        }
+        return convertToEvents(valueWrapper.get());
+    }
+
+    private List<Event> convertToEvents(Object value) {
+        return objectMapper.convertValue(
+                value,
+                objectMapper.getTypeFactory().constructCollectionType(List.class, Event.class));
     }
 }

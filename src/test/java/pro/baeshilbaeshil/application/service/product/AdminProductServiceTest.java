@@ -1,13 +1,9 @@
 package pro.baeshilbaeshil.application.service.product;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import pro.baeshilbaeshil.application.common.exception.NotFoundException;
-import pro.baeshilbaeshil.application.domain.product.ProductRepository;
 import pro.baeshilbaeshil.application.domain.shop.Shop;
-import pro.baeshilbaeshil.application.domain.shop.ShopRepository;
 import pro.baeshilbaeshil.application.service.dto.product.CreateProductRequest;
 import pro.baeshilbaeshil.application.service.dto.product.CreateProductResponse;
 import pro.baeshilbaeshil.common.ServiceTest;
@@ -16,21 +12,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class AdminProductServiceTest extends ServiceTest {
-
-    @Autowired
-    private AdminProductService adminProductService;
-
-    @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
-    private ShopRepository shopRepository;
-
-    @BeforeEach
-    void setUp() {
-        productRepository.deleteAllInBatch();
-        shopRepository.deleteAllInBatch();
-    }
 
     @DisplayName("상품을 등록한다.")
     @Test

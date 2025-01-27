@@ -1,61 +1,22 @@
 package pro.baeshilbaeshil.application.service.event;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 import pro.baeshilbaeshil.application.common.exception.NotFoundException;
 import pro.baeshilbaeshil.application.domain.event.Event;
-import pro.baeshilbaeshil.application.domain.event.EventRepository;
 import pro.baeshilbaeshil.application.domain.product.Product;
-import pro.baeshilbaeshil.application.domain.product.ProductRepository;
 import pro.baeshilbaeshil.application.domain.shop.Shop;
-import pro.baeshilbaeshil.application.domain.shop.ShopRepository;
 import pro.baeshilbaeshil.application.service.dto.event.CreateEventRequest;
 import pro.baeshilbaeshil.application.service.dto.event.CreateEventResponse;
 import pro.baeshilbaeshil.application.service.dto.event.UpdateEventRequest;
 import pro.baeshilbaeshil.common.ServiceTest;
-import pro.baeshilbaeshil.config.RedisCacheName;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 
 class AdminEventServiceTest extends ServiceTest {
-
-    @Autowired
-    private AdminEventService adminEventService;
-
-    @Autowired
-    private EventCacheService eventCacheService;
-
-    @Autowired
-    private CacheManager cacheManager;
-
-    @Autowired
-    private EventRepository eventRepository;
-
-    @Autowired
-    private ShopRepository shopRepository;
-
-    @Autowired
-    private ProductRepository productRepository;
-
-    @BeforeEach
-    void setUp() {
-        Cache cache = cacheManager.getCache(RedisCacheName.EVENT);
-        if (cache == null) {
-            throw new IllegalStateException("Cache not found: " + RedisCacheName.EVENT);
-        }
-        cache.clear();
-
-        eventRepository.deleteAllInBatch();
-        productRepository.deleteAllInBatch();
-        shopRepository.deleteAllInBatch();
-    }
 
     @DisplayName("이벤트를 등록한다.")
     @Test
@@ -126,9 +87,25 @@ class AdminEventServiceTest extends ServiceTest {
         // then
         Event event = eventRepository.findById(response.getId()).orElseThrow();
 
-        Event cachedEvent = eventCacheService.convertToEvent(getCacheValue(event).get());
-        assertThat(cachedEvent).isNotNull();
-        assertThat(cachedEvent).isEqualTo(event);
+        List<Event> cachedEvents = eventCacheService.getEvents();
+        assertThat(cachedEvents).isNotNull();
+        assertThat(cachedEvents).extracting(
+                        Event::getId,
+                        Event::getProductId,
+                        Event::getName,
+                        Event::getDescription,
+                        Event::getImageUrl,
+                        Event::getBeginTime,
+                        Event::getEndTime)
+                .contains(
+                        tuple(
+                                event.getId(),
+                                event.getProductId(),
+                                event.getName(),
+                                event.getDescription(),
+                                event.getImageUrl(),
+                                event.getBeginTime(),
+                                event.getEndTime()));
     }
 
     @DisplayName("이벤트 등록 시, 등록된 상품이 아니라면 예외가 발생한다.")
@@ -264,9 +241,25 @@ class AdminEventServiceTest extends ServiceTest {
         // then
         Event updatedEvent = eventRepository.findById(eventId).orElseThrow();
 
-        Event cachedEvent = eventCacheService.convertToEvent(getCacheValue(event).get());
-        assertThat(cachedEvent).isNotNull();
-        assertThat(cachedEvent).isEqualTo(updatedEvent);
+        List<Event> cachedEvents = eventCacheService.getEvents();
+        assertThat(cachedEvents).isNotNull();
+        assertThat(cachedEvents).extracting(
+                        Event::getId,
+                        Event::getProductId,
+                        Event::getName,
+                        Event::getDescription,
+                        Event::getImageUrl,
+                        Event::getBeginTime,
+                        Event::getEndTime)
+                .contains(
+                        tuple(
+                                updatedEvent.getId(),
+                                updatedEvent.getProductId(),
+                                updatedEvent.getName(),
+                                updatedEvent.getDescription(),
+                                updatedEvent.getImageUrl(),
+                                updatedEvent.getBeginTime(),
+                                updatedEvent.getEndTime()));
     }
 
     private Long createShop() {
@@ -290,13 +283,5 @@ class AdminEventServiceTest extends ServiceTest {
 
         Product savedProduct = productRepository.save(product);
         return savedProduct.getId();
-    }
-
-    private Cache.ValueWrapper getCacheValue(Event event) {
-        Cache cache = cacheManager.getCache(RedisCacheName.EVENT);
-        if (cache == null) {
-            throw new IllegalStateException("Cache not found: " + RedisCacheName.EVENT);
-        }
-        return cache.get(event.getId());
     }
 }
