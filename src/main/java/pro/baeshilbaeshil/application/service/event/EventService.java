@@ -3,6 +3,7 @@ package pro.baeshilbaeshil.application.service.event;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pro.baeshilbaeshil.application.common.exception.EventsCacheMissException;
 import pro.baeshilbaeshil.application.domain.event.Event;
 import pro.baeshilbaeshil.application.domain.event.EventRepository;
 import pro.baeshilbaeshil.application.service.dto.event.GetEventsResponse;
@@ -15,6 +16,7 @@ import java.util.List;
 @Service
 public class EventService {
 
+    private final EventCacheService eventCacheService;
     private final EventRepository eventRepository;
 
     public GetEventsResponse getActiveEvents(LocalDateTime date) {
@@ -24,6 +26,11 @@ public class EventService {
 
     public GetEventsResponse getActiveEventsByIndexRangeScan(LocalDateTime date) {
         List<Event> activeEvents = eventRepository.findActiveEventsByIndexRangeScan(date);
+        return GetEventsResponse.of(activeEvents);
+    }
+
+    public GetEventsResponse getActiveEventsByRedis(LocalDateTime date) {
+        List<Event> activeEvents = eventCacheService.getActiveEvents(date);
         return GetEventsResponse.of(activeEvents);
     }
 }

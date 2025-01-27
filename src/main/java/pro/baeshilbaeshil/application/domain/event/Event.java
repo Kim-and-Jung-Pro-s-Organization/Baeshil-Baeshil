@@ -84,6 +84,10 @@ public class Event extends BaseEntity {
         }
     }
 
+    public boolean isActive(LocalDateTime date) {
+        return !date.isBefore(beginTime) && date.isBefore(endTime);
+    }
+
     @Override
     public boolean equals(Object object) {
         if (object == null || getClass() != object.getClass()) return false;
