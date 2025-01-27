@@ -42,7 +42,7 @@ public class EventController {
         if (date == null) {
             date = LocalDateTime.now();
         }
-        GetEventsResponse response = eventService.getActiveEventsByRedis(date);
+        GetEventsResponse response = eventService.getActiveEventsByRedisCache(date);
         return ResponseEntity.ok(response);
     }
 }
