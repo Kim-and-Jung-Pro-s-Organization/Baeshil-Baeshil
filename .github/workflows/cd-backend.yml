@@ -38,7 +38,7 @@ jobs:
           docker images
           docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
 
-      - name: Deploy to Prod WAS Server
+      - name: Deploy to Dev WAS Server
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.WAS_HOST }}
@@ -46,6 +46,7 @@ jobs:
           key: ${{ secrets.WAS_KEY }}
           port: ${{ secrets.WAS_SSH_PORT }}
           script: |
+            docker system prune -a -f
             cd /home/ubuntu/BaeshilBaeshil/
             sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
             sudo docker rm -f $(sudo docker ps -qa)
