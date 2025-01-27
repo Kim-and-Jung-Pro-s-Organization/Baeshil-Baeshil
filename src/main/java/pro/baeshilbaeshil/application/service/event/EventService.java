@@ -15,6 +15,8 @@ import java.util.List;
 @Service
 public class EventService {
 
+    private final EventCacheService eventCacheService;
+
     private final EventRepository eventRepository;
 
     public GetEventsResponse getActiveEvents(LocalDateTime date) {
@@ -24,6 +26,11 @@ public class EventService {
 
     public GetEventsResponse getActiveEventsByIndexRangeScan(LocalDateTime date) {
         List<Event> activeEvents = eventRepository.findActiveEventsByIndexRangeScan(date);
+        return GetEventsResponse.of(activeEvents);
+    }
+
+    public GetEventsResponse getActiveEventsByRedisCache(LocalDateTime date) {
+        List<Event> activeEvents = eventCacheService.getActiveEvents(date);
         return GetEventsResponse.of(activeEvents);
     }
 }

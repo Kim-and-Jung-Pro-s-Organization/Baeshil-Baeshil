@@ -9,13 +9,7 @@ import java.util.List;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
 
-    @Query(value = """
-            select *
-            from events e
-            where e.begin_time <= :date
-              and e.end_time > :date
-            """,
-            nativeQuery = true)
+    @Query("SELECT e FROM Event e WHERE e.beginTime <= :date AND e.endTime > :date")
     List<Event> findActiveEvents(@Param("date") LocalDateTime date);
 
     @Query(value = """

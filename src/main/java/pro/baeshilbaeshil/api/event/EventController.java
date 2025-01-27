@@ -35,4 +35,14 @@ public class EventController {
         GetEventsResponse response = eventService.getActiveEventsByIndexRangeScan(date);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/api/v1/events-redis")
+    public ResponseEntity<GetEventsResponse> getActiveEventsByRedisCache(
+            @RequestParam("date") LocalDateTime date) {
+        if (date == null) {
+            date = LocalDateTime.now();
+        }
+        GetEventsResponse response = eventService.getActiveEventsByRedisCache(date);
+        return ResponseEntity.ok(response);
+    }
 }
