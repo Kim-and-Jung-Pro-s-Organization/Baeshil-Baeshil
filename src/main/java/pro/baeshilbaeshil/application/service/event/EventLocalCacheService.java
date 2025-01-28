@@ -1,5 +1,6 @@
 package pro.baeshilbaeshil.application.service.event;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static pro.baeshilbaeshil.config.ObjectMapperFactory.objectMapper;
 import static pro.baeshilbaeshil.config.RedisCacheName.EVENTS;
 
 @RequiredArgsConstructor
@@ -20,7 +22,7 @@ public class EventLocalCacheService {
 
     private final LocalCacheManager localCacheManager;
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
 
     private final EventRepository eventRepository;
 
@@ -49,7 +51,11 @@ public class EventLocalCacheService {
             if (Boolean.TRUE.equals(lockAcquired)) {
                 try {
                     List<Event> events = eventRepository.findAll();
-                    redisTemplate.opsForValue().set(EVENTS, events);
+                    try {
+                        redisTemplate.opsForValue().set(EVENTS, objectMapper.writeValueAsString(events));
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
                     return events;
 
                 } finally {

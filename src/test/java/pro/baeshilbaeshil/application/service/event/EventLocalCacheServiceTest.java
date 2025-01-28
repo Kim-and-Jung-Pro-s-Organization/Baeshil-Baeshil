@@ -3,12 +3,10 @@ package pro.baeshilbaeshil.application.service.event;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import pro.baeshilbaeshil.application.domain.event.Event;
 import pro.baeshilbaeshil.common.ServiceTest;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,9 +16,6 @@ class EventLocalCacheServiceTest extends ServiceTest {
 
     @Autowired
     private EventLocalCacheService eventLocalCacheService;
-
-    @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
 
     @DisplayName("캐싱된 이벤트 목록을 조회한다.")
     @Test

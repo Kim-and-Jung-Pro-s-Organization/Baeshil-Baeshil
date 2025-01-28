@@ -1,5 +1,7 @@
 package pro.baeshilbaeshil.config;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import jakarta.annotation.PostConstruct;
@@ -12,6 +14,8 @@ import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static pro.baeshilbaeshil.config.ObjectMapperFactory.objectMapper;
+
 @Component
 @RequiredArgsConstructor
 public class LocalCacheManager {
@@ -23,7 +27,7 @@ public class LocalCacheManager {
 
     private static Cache<String, List<Event>> eventCache;
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @PostConstruct
     public void init() {
@@ -40,13 +44,14 @@ public class LocalCacheManager {
     }
 
     public List<Event> getEventCache() {
-        return getLocalCache(eventCache, RedisCacheName.EVENTS);
+        return getLocalCache(eventCache, RedisCacheName.EVENTS, new TypeReference<>() {
+        });
     }
 
-    private <T> T getLocalCache(Cache<String, T> localCache, String key) {
+    private <T> T getLocalCache(Cache<String, T> localCache, String key, TypeReference<T> typeReference) {
         T cachedValue = localCache.get(key, k -> null);
         if (cachedValue == null) {
-            cachedValue = loadFromRedis(key);
+            cachedValue = loadFromRedis(key, typeReference);
             if (cachedValue == null) {
                 return null;
             }
@@ -55,8 +60,16 @@ public class LocalCacheManager {
         return cachedValue;
     }
 
-    private <T> T loadFromRedis(String key) {
-        return (T) redisTemplate.opsForValue().get(key);
+    private <T> T loadFromRedis(String key, TypeReference<T> typeReference) {
+        try {
+            String value = redisTemplate.opsForValue().get(key);
+            if (value == null) {
+                return null;
+            }
+            return objectMapper.readValue(value, typeReference);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void invalidateCache(String cacheName) {
