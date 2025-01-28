@@ -56,6 +56,9 @@
                 <!-- 초과 시 가장 오래된 백업 파일부터 삭제 -->
                 <totalSizeCap>100MB</totalSizeCap>
             </rollingPolicy>
+            <encoder>
+                <pattern>${LOG_PATTERN}</pattern>
+            </encoder>
         </appender>
 
         <appender name="FILE_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -77,6 +80,9 @@
                 <!-- 초과 시 가장 오래된 백업 파일부터 삭제 -->
                 <totalSizeCap>500MB</totalSizeCap>
             </rollingPolicy>
+            <encoder>
+                <pattern>${LOG_PATTERN}</pattern>
+            </encoder>
         </appender>
 
         <!-- 기본 로그레벨 INFO -->
