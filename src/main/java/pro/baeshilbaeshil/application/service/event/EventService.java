@@ -16,7 +16,6 @@ import java.util.List;
 public class EventService {
 
     private final EventCacheService eventCacheService;
-
     private final EventLocalCacheService eventLocalCacheService;
 
     private final EventRepository eventRepository;
