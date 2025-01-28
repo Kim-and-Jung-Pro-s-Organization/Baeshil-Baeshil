@@ -38,6 +38,6 @@ public class EventService {
 
     public GetEventsResponse getActiveEventsByLocalCache(LocalDateTime date) {
         List<Event> activeEvents = eventLocalCacheService.getActiveEvents(date);
-        return null;
+        return GetEventsResponse.of(activeEvents);
     }
 }
