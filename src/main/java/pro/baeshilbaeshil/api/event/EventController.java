@@ -45,4 +45,14 @@ public class EventController {
         GetEventsResponse response = eventService.getActiveEventsByRedisCache(date);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/api/v1/events-local-cache")
+    public ResponseEntity<GetEventsResponse> getActiveEventsByLocalCache(
+            @RequestParam("date") LocalDateTime date) {
+        if (date == null) {
+            date = LocalDateTime.now();
+        }
+        GetEventsResponse response = eventService.getActiveEventsByLocalCache(date);
+        return ResponseEntity.ok(response);
+    }
 }

@@ -17,6 +17,8 @@ public class EventService {
 
     private final EventCacheService eventCacheService;
 
+    private final EventLocalCacheService eventLocalCacheService;
+
     private final EventRepository eventRepository;
 
     public GetEventsResponse getActiveEvents(LocalDateTime date) {
@@ -32,5 +34,10 @@ public class EventService {
     public GetEventsResponse getActiveEventsByRedisCache(LocalDateTime date) {
         List<Event> activeEvents = eventCacheService.getActiveEvents(date);
         return GetEventsResponse.of(activeEvents);
+    }
+
+    public GetEventsResponse getActiveEventsByLocalCache(LocalDateTime date) {
+        List<Event> activeEvents = eventLocalCacheService.getActiveEvents(date);
+        return null;
     }
 }
