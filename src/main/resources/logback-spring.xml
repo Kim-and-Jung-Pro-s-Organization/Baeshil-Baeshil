@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <timestamp key="BY_DATE" datePattern="yyyy-MM-dd"/>
+    <property name="LOG_PATH" value="./logs"/>
+    <property name="ARCHIVE_PATH" value="./archive"/>
+    <property name="LOG_PATTERN"
+              value="[%d{yyyy-MM-dd HH:mm:ss}:%-4relative] %green([%thread]) %highlight(%-5level) [%C.%M:%line] - %msg%n"/>
+
+    <!-- SQL 로그 -->
+    <logger name="org.hibernate.SQL" level="DEBUG"/>
+    <!-- SQL 바인딩 파라미터 로그 -->
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"/>
+    <!-- 커넥션 풀 로그 -->
+    <logger name="com.zaxxer.hikari" level="DEBUG"/>
+    <!-- 트랜잭션 매니저 로그 -->
+    <logger name="org.springframework.orm.jpa.JpaTransactionManager" level="DEBUG"/>
+
+    <springProfile name="default">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+                <layout class="baeshil.server.support.logging.MaskingPatternLayout">
+                    <maskPattern>(\d+\.\d+\.\d+\.\d+)</maskPattern> <!-- Ip address IPv4 pattern -->
+                    <pattern>${LOG_PATTERN}</pattern>
+                </layout>
+            </encoder>
+        </appender>
+
+        <!-- 로컬 환경에서는 기본 로그레벨 INFO -->
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="!default">
+        <!-- 개발 환경과 운영 환경에서는 로그를 파일로 저장 -->
+        <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${LOG_PATH}/baeshil-${BY_DATE}.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <!-- rolling(백업) 파일 저장 위치 -->
+                <fileNamePattern>${ARCHIVE_PATH}/baeshil-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+                <!-- 로그 파일이 10MB 넘으면 백업하고 새로운 파일 생성 -->
+                <maxFileSize>10MB</maxFileSize>
+                <!-- 백업 로그 파일은 7일 이후 삭제 -->
+                <maxHistory>7</maxHistory>
+                <!-- 로그 파일과 백업 로그 파일의 최대 크기는 100MB -->
+                <!-- 초과 시 가장 오래된 백업 파일부터 삭제 -->
+                <totalSizeCap>100MB</totalSizeCap>
+            </rollingPolicy>
+        </appender>
+
+        <appender name="FILE_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${LOG_PATH}/error/baeshil-error-${BY_DATE}.log</file>
+            <!-- ERROR 로깅 레벨만 필터링 -->
+            <filter class="ch.qos.logback.classic.filter.LevelFilter">
+                <level>ERROR</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <!-- 에러 rolling(백업) 파일 저장 위치 -->
+                <fileNamePattern>${ARCHIVE_PATH}/error/baeshil-error-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+                <!-- 에러 로그 파일이 10MB 넘으면 백업하고 새로운 파일 생성 -->
+                <maxFileSize>10MB</maxFileSize>
+                <!-- 에러 백업 로그 파일은 20일 이후 삭제 -->
+                <maxHistory>20</maxHistory>
+                <!-- 에러 관련 로그 파일과 백업 로그 파일의 최대 크기는 500MB -->
+                <!-- 초과 시 가장 오래된 백업 파일부터 삭제 -->
+                <totalSizeCap>500MB</totalSizeCap>
+            </rollingPolicy>
+        </appender>
+
+        <!-- 기본 로그레벨 INFO -->
+        <root level="INFO">
+            <appender-ref ref="FILE"/>
+            <appender-ref ref="FILE_ERROR"/>
+        </root>
+    </springProfile>
+</configuration>
