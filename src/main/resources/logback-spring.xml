@@ -28,7 +28,20 @@
         </root>
     </springProfile>
 
-    <springProfile name="!default">
+    <springProfile name="test">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>${LOG_PATTERN}</pattern>
+            </encoder>
+        </appender>
+
+        <!-- 로컬 환경에서는 기본 로그레벨 INFO -->
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="dev">
         <!-- 개발 환경과 운영 환경에서는 로그를 파일로 저장 -->
         <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <file>${LOG_PATH}/baeshil-${BY_DATE}.log</file>
