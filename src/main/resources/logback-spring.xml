@@ -17,11 +17,8 @@
 
     <springProfile name="default">
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
-                <layout class="baeshil.server.support.logging.MaskingPatternLayout">
-                    <maskPattern>(\d+\.\d+\.\d+\.\d+)</maskPattern> <!-- Ip address IPv4 pattern -->
-                    <pattern>${LOG_PATTERN}</pattern>
-                </layout>
+            <encoder>
+                <pattern>${LOG_PATTERN}</pattern>
             </encoder>
         </appender>
 
