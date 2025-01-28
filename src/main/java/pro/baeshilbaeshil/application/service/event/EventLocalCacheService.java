@@ -20,12 +20,12 @@ import static pro.baeshilbaeshil.config.local_cache.ObjectMapperFactory.writeVal
 @Service
 public class EventLocalCacheService {
 
-    private static final String EVENTS_LOCK_KEY = "events_lock";
+    public static final String EVENTS_LOCK_KEY = "events_lock";
     private static final String EVENTS_LOCK_VALUE = "true";
 
-    private static final int MAX_RETRY_CNT = 5;
-    private static final int INITIAL_DELAY_MSEC = 1000;
-    private static final int MAX_DELAY_MSEC = 10000;
+    private static final int MAX_RETRY_CNT = 10;
+    private static final int INITIAL_DELAY_MSEC = 1_000;
+    private static final int MAX_DELAY_MSEC = 100_000;
 
     private final LocalCacheManager localCacheManager;
     private final RedisTemplate<String, String> redisTemplate;
@@ -48,10 +48,13 @@ public class EventLocalCacheService {
         if (lockIsAcquired.equals(Boolean.FALSE)) {
             return loadFromCache();
         }
-        List<Event> events = loadFromDb();
-        cacheOnRedis(events);
-        releaseEventsLock();
-        return events;
+        try {
+            List<Event> events = loadFromDb();
+            cacheOnRedis(events);
+            return events;
+        } finally {
+            releaseEventsLock();
+        }
     }
 
     private List<Event> loadFromCache() {

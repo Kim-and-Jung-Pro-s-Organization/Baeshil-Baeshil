@@ -12,6 +12,7 @@ import pro.baeshilbaeshil.application.domain.event.Event;
 import java.time.Duration;
 import java.util.List;
 
+import static pro.baeshilbaeshil.application.service.event.EventLocalCacheService.EVENTS_LOCK_KEY;
 import static pro.baeshilbaeshil.config.local_cache.ObjectMapperFactory.readValue;
 
 @RequiredArgsConstructor
@@ -30,9 +31,14 @@ public class LocalCacheManager {
 
     @PostConstruct
     public void init() {
-        redisTemplate.delete(EVENTS_CACHE_KEY);
+        initRedis();
         setEventsCache();
         setSubscriberMessageListener();
+    }
+
+    private void initRedis() {
+        redisTemplate.delete(EVENTS_CACHE_KEY);
+        redisTemplate.delete(EVENTS_LOCK_KEY);
     }
 
     private static void setEventsCache() {
