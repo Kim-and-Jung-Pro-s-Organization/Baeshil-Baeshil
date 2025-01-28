@@ -17,7 +17,6 @@ import static pro.baeshilbaeshil.config.local_cache.ObjectMapperFactory.readValu
 import static pro.baeshilbaeshil.config.local_cache.ObjectMapperFactory.writeValueAsString;
 
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 @Service
 public class EventCacheService {
 
@@ -27,7 +26,6 @@ public class EventCacheService {
 
     private final EventRepository eventRepository;
 
-    @Transactional
     public void cacheEvents() {
         evictRedisCache();
 
@@ -35,7 +33,6 @@ public class EventCacheService {
         cacheOnRedis(events);
     }
 
-    @Transactional
     protected List<Event> cacheAndReturnEvents() {
         evictRedisCache();
 
@@ -69,7 +66,6 @@ public class EventCacheService {
         };
         return readValue(value, typeReference);
     }
-
 
     private void evictRedisCache() {
         redisTemplate.delete(EVENTS_CACHE_KEY);
