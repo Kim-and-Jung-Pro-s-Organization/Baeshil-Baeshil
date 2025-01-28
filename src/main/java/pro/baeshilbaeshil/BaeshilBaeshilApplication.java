@@ -11,5 +11,4 @@ public class BaeshilBaeshilApplication {
     public static void main(String[] args) {
         SpringApplication.run(BaeshilBaeshilApplication.class, args);
     }
-
 }

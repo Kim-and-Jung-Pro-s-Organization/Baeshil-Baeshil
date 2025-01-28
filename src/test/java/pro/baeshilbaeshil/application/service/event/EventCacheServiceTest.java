@@ -2,7 +2,7 @@ package pro.baeshilbaeshil.application.service.event;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import pro.baeshilbaeshil.application.common.exception.EventsCacheMissException;
+import pro.baeshilbaeshil.application.common.exception.CacheMissException;
 import pro.baeshilbaeshil.application.domain.event.Event;
 import pro.baeshilbaeshil.common.ServiceTest;
 
@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.*;
 
 class EventCacheServiceTest extends ServiceTest {
 
-    @DisplayName("이벤트 목록을 캐싱한다.")
+    @DisplayName("Redis에 이벤트 목록을 캐싱한다.")
     @Test
     void cacheEvents() {
         // given
@@ -31,13 +31,13 @@ class EventCacheServiceTest extends ServiceTest {
         eventRepository.save(event);
 
         // when
-        assertThatThrownBy(() -> eventCacheService.getEvents())
-                .isInstanceOf(EventsCacheMissException.class);
+        assertThatThrownBy(() -> eventCacheService.loadFromRedis())
+                .isInstanceOf(CacheMissException.class);
 
         eventCacheService.cacheEvents();
 
         // then
-        List<Event> cachedEvents = eventCacheService.getEvents();
+        List<Event> cachedEvents = eventCacheService.loadFromRedis();
         assertThat(cachedEvents).isNotNull();
         assertThat(cachedEvents).extracting(
                         Event::getId,
@@ -57,9 +57,9 @@ class EventCacheServiceTest extends ServiceTest {
                         event.getEndTime()));
     }
 
-    @DisplayName("캐싱된 이벤트 목록을 조회한다.")
+    @DisplayName("Redis에 캐싱된 이벤트 목록을 조회한다.")
     @Test
-    void getEvents() {
+    void loadFromRedis() {
         // given
         LocalDateTime date = LocalDateTime.of(2025, 1, 1, 0, 0, 0);
 
@@ -97,7 +97,7 @@ class EventCacheServiceTest extends ServiceTest {
         eventCacheService.cacheEvents();
 
         // when
-        List<Event> cachedEvents = eventCacheService.getEvents();
+        List<Event> cachedEvents = eventCacheService.loadFromRedis();
 
         // then
         assertThat(cachedEvents).isNotNull();

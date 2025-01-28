@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
@@ -29,21 +28,10 @@ public class RedisConfig {
         return redisTemplate;
     }
 
-//    @Primary
-//    @Bean
-//    public RedisTemplate<String, String> stringRedisTemplate() {
-//        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
-//        redisTemplate.setConnectionFactory(redisConnectionFactory);
-//        redisTemplate.setKeySerializer(redisTemplate.getStringSerializer());
-//        redisTemplate.setValueSerializer(redisTemplate.getStringSerializer());
-//        return redisTemplate;
-//    }
-
     @Bean
     public ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.activateDefaultTyping(objectMapper.getPolymorphicTypeValidator(), ObjectMapper.DefaultTyping.NON_FINAL );
         return objectMapper;
     }
 
@@ -53,5 +41,4 @@ public class RedisConfig {
         container.setConnectionFactory(redisConnectionFactory);
         return container;
     }
-
 }

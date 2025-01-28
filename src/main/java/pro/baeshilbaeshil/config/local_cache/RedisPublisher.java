@@ -1,4 +1,4 @@
-package pro.baeshilbaeshil.config;
+package pro.baeshilbaeshil.config.local_cache;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;

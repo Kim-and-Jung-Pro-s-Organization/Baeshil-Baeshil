@@ -17,51 +17,50 @@ class EventLocalCacheServiceTest extends ServiceTest {
     @Autowired
     private EventLocalCacheService eventLocalCacheService;
 
-    @DisplayName("캐싱된 이벤트 목록을 조회한다.")
+    @DisplayName("캐싱된 이벤트 목록을 조회하여 활성화된 이벤트 목록을 추출한다.")
     @Test
-    void getEvents() {
+    void getActiveEvents() {
         // given
         LocalDateTime date = LocalDateTime.of(2025, 1, 1, 0, 0, 0);
 
-        Event event1 = Event.builder()
+        Event activeEvent1 = Event.builder()
                 .productId(1L)
-                .name("이벤트_이름_1")
-                .description("이벤트_설명_1")
+                .name("활성_이벤트_이름_1")
+                .description("활성_이벤트_설명_1")
                 .imageUrl("http://localhost:8080/image_1")
-                .beginTime(date.minusMonths(1))
+                .beginTime(date)
                 .endTime(date.plusMonths(1))
                 .build();
 
-        Event event2 = Event.builder()
-                .productId(2L)
-                .name("이벤트_이름_2")
-                .description("이벤트_설명_2")
+        Event activeEvent2 = Event.builder()
+                .productId(1L)
+                .name("활성_이벤트_이름_2")
+                .description("활성_이벤트_설명_2")
                 .imageUrl("http://localhost:8080/image_2")
-                .beginTime(date.minusMonths(1))
-                .endTime(date.plusMonths(1))
+                .beginTime(date.minusMonths(2))
+                .endTime(date.plusMonths(2))
                 .build();
 
-        Event event3 = Event.builder()
-                .productId(3L)
-                .name("이벤트_이름_3")
-                .description("이벤트_설명_3")
-                .imageUrl("http://localhost:8080/image_3")
-                .beginTime(date.minusMonths(1))
-                .endTime(date.plusMonths(1))
+        Event inactiveEvent = Event.builder()
+                .productId(2L)
+                .name("비활성_이벤트_이름")
+                .description("비활성_이벤트_설명")
+                .imageUrl("http://localhost:8080/image")
+                .beginTime(date.minusMonths(2))
+                .endTime(date.minusMonths(1))
                 .build();
 
-        eventRepository.save(event1);
-        eventRepository.save(event2);
-        eventRepository.save(event3);
+        Event savedActiveEvent1 = eventRepository.save(activeEvent1);
+        Event savedActiveEvent2 = eventRepository.save(activeEvent2);
+        eventRepository.save(inactiveEvent);
 
         // when
-        List<Event> cachedEvents = eventLocalCacheService.getActiveEvents(date);
+        List<Event> activeEvents = eventLocalCacheService.getActiveEvents(date);
 
         // then
-        assertThat(cachedEvents).isNotNull();
-        assertThat(cachedEvents).extracting(
+        assertThat(activeEvents)
+                .extracting(
                         Event::getId,
-                        Event::getProductId,
                         Event::getName,
                         Event::getDescription,
                         Event::getImageUrl,
@@ -69,29 +68,19 @@ class EventLocalCacheServiceTest extends ServiceTest {
                         Event::getEndTime)
                 .containsExactlyInAnyOrder(
                         tuple(
-                                event1.getId(),
-                                event1.getProductId(),
-                                event1.getName(),
-                                event1.getDescription(),
-                                event1.getImageUrl(),
-                                event1.getBeginTime(),
-                                event1.getEndTime()),
+                                savedActiveEvent1.getId(),
+                                savedActiveEvent1.getName(),
+                                savedActiveEvent1.getDescription(),
+                                savedActiveEvent1.getImageUrl(),
+                                savedActiveEvent1.getBeginTime(),
+                                savedActiveEvent1.getEndTime()),
                         tuple(
-                                event2.getId(),
-                                event2.getProductId(),
-                                event2.getName(),
-                                event2.getDescription(),
-                                event2.getImageUrl(),
-                                event2.getBeginTime(),
-                                event2.getEndTime()),
-                        tuple(
-                                event3.getId(),
-                                event3.getProductId(),
-                                event3.getName(),
-                                event3.getDescription(),
-                                event3.getImageUrl(),
-                                event3.getBeginTime(),
-                                event3.getEndTime())
+                                savedActiveEvent2.getId(),
+                                savedActiveEvent2.getName(),
+                                savedActiveEvent2.getDescription(),
+                                savedActiveEvent2.getImageUrl(),
+                                savedActiveEvent2.getBeginTime(),
+                                savedActiveEvent2.getEndTime())
                 );
     }
 }
