@@ -12,10 +12,10 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
-class EventLocalCacheServiceTest extends ServiceTest {
+class EventsLocalCacheServiceTest extends ServiceTest {
 
     @Autowired
-    private EventLocalCacheService eventLocalCacheService;
+    private EventsLocalCacheService eventsLocalCacheService;
 
     @DisplayName("캐싱된 이벤트 목록을 조회하여 활성화된 이벤트 목록을 추출한다.")
     @Test
@@ -55,7 +55,7 @@ class EventLocalCacheServiceTest extends ServiceTest {
         eventRepository.save(inactiveEvent);
 
         // when
-        List<Event> activeEvents = eventLocalCacheService.getActiveEvents(date);
+        List<Event> activeEvents = eventsLocalCacheService.getActiveEvents(date);
 
         // then
         assertThat(activeEvents)

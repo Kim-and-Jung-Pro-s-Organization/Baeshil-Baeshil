@@ -12,7 +12,7 @@ import pro.baeshilbaeshil.application.domain.event.Event;
 import java.time.Duration;
 import java.util.List;
 
-import static pro.baeshilbaeshil.application.service.event.EventLocalCacheService.EVENTS_LOCK_KEY;
+import static pro.baeshilbaeshil.application.service.event.EventsLocalCacheService.EVENTS_LOCK_KEY;
 import static pro.baeshilbaeshil.config.local_cache.ObjectMapperFactory.readValue;
 
 @RequiredArgsConstructor

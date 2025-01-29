@@ -9,7 +9,7 @@ import pro.baeshilbaeshil.application.domain.event.EventRepository;
 import pro.baeshilbaeshil.application.domain.product.ProductRepository;
 import pro.baeshilbaeshil.application.domain.shop.ShopRepository;
 import pro.baeshilbaeshil.application.service.event.AdminEventService;
-import pro.baeshilbaeshil.application.service.event.EventCacheService;
+import pro.baeshilbaeshil.application.service.event.EventsCacheService;
 import pro.baeshilbaeshil.application.service.product.AdminProductService;
 
 import java.util.Objects;
@@ -24,7 +24,7 @@ public abstract class ServiceTest {
     @Autowired
     protected AdminEventService adminEventService;
     @Autowired
-    protected EventCacheService eventCacheService;
+    protected EventsCacheService eventsCacheService;
     @Autowired
     protected RedisTemplate<String, String> redisTemplate;
 

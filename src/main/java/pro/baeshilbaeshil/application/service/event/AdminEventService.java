@@ -20,7 +20,7 @@ import static pro.baeshilbaeshil.application.common.exception_type.ProductExcept
 @Service
 public class AdminEventService {
 
-    private final EventCacheService eventCacheService;
+    private final EventsCacheService eventsCacheService;
     private final EventRepository eventRepository;
 
     private final ProductRepository productRepository;
@@ -40,7 +40,7 @@ public class AdminEventService {
                 .build();
 
         Event savedEvent = eventRepository.save(event);
-        eventCacheService.cacheEvents();
+        eventsCacheService.cacheEvents();
         return CreateEventResponse.of(savedEvent);
     }
 
@@ -60,7 +60,7 @@ public class AdminEventService {
                 request.getEndTime());
 
         eventRepository.save(event);
-        eventCacheService.cacheEvents();
+        eventsCacheService.cacheEvents();
     }
 
     private void validateProductId(Long productId) {

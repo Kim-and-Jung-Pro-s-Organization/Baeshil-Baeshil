@@ -15,8 +15,8 @@ import java.util.List;
 @Service
 public class EventService {
 
-    private final EventCacheService eventCacheService;
-    private final EventLocalCacheService eventLocalCacheService;
+    private final EventsCacheService eventsCacheService;
+    private final EventsLocalCacheService eventsLocalCacheService;
 
     private final EventRepository eventRepository;
 
@@ -31,12 +31,12 @@ public class EventService {
     }
 
     public GetEventsResponse getActiveEventsByRedisCache(LocalDateTime date) {
-        List<Event> activeEvents = eventCacheService.getActiveEvents(date);
+        List<Event> activeEvents = eventsCacheService.getActiveEvents(date);
         return GetEventsResponse.of(activeEvents);
     }
 
     public GetEventsResponse getActiveEventsByLocalCache(LocalDateTime date) {
-        List<Event> activeEvents = eventLocalCacheService.getActiveEvents(date);
+        List<Event> activeEvents = eventsLocalCacheService.getActiveEvents(date);
         return GetEventsResponse.of(activeEvents);
     }
 }

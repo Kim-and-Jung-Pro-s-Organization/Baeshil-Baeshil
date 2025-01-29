@@ -19,7 +19,7 @@ import static pro.baeshilbaeshil.config.local_cache.ObjectMapperFactory.writeVal
 
 @RequiredArgsConstructor
 @Service
-public class EventCacheService {
+public class EventsCacheService {
 
     public static final String EVENTS_CACHE_KEY = "events";
     public static final String EVENTS_LOCK_KEY = "events_lock";

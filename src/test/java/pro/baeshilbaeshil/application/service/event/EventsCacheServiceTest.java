@@ -11,7 +11,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
-class EventCacheServiceTest extends ServiceTest {
+class EventsCacheServiceTest extends ServiceTest {
 
     @DisplayName("Redis에 이벤트 목록을 캐싱한다.")
     @Test
@@ -31,10 +31,10 @@ class EventCacheServiceTest extends ServiceTest {
         eventRepository.save(event);
 
         // when
-        eventCacheService.cacheEvents();
+        eventsCacheService.cacheEvents();
 
         // then
-        List<Event> cachedEvents = eventCacheService.getEvents();
+        List<Event> cachedEvents = eventsCacheService.getEvents();
         assertThat(cachedEvents).isNotNull();
         assertThat(cachedEvents).extracting(
                         Event::getId,
@@ -91,10 +91,10 @@ class EventCacheServiceTest extends ServiceTest {
         eventRepository.save(event2);
         eventRepository.save(event3);
 
-        eventCacheService.cacheEvents();
+        eventsCacheService.cacheEvents();
 
         // when
-        List<Event> cachedEvents = eventCacheService.getEvents();
+        List<Event> cachedEvents = eventsCacheService.getEvents();
 
         // then
         assertThat(cachedEvents).isNotNull();
@@ -171,10 +171,10 @@ class EventCacheServiceTest extends ServiceTest {
         Event savedActiveEvent2 = eventRepository.save(activeEvent2);
         eventRepository.save(inactiveEvent);
 
-        eventCacheService.cacheEvents();
+        eventsCacheService.cacheEvents();
 
         // when
-        List<Event> activeEvents = eventCacheService.getActiveEvents(date);
+        List<Event> activeEvents = eventsCacheService.getActiveEvents(date);
 
         // then
         assertThat(activeEvents)
