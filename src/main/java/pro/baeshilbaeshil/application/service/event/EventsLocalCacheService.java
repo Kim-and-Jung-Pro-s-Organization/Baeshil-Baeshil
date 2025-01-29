@@ -21,12 +21,28 @@ import static pro.baeshilbaeshil.config.local_cache.ObjectMapperFactory.writeVal
 @Service
 public class EventsLocalCacheService {
 
-    public static final String EVENTS_LOCK_KEY = "events_lock";
+    public static final String EVENTS_LOCK_KEY = "events-lock";
 
     private final LocalCacheManager localCacheManager;
     private final RedisCacheManager redisCacheManager;
 
     private final EventRepository eventRepository;
+
+    public void cacheEvents() {
+        redisCacheManager.evict(EVENTS_CACHE_KEY);
+        localCacheManager.publishInvalidateCacheMessage(EVENTS_CACHE_KEY);
+
+        Boolean lockIsAcquired = redisCacheManager.tryLock(EVENTS_LOCK_KEY);
+        if (lockIsAcquired.equals(Boolean.FALSE)) {
+            return;
+        }
+        try {
+            List<Event> events = loadFromDb();
+            cacheOnRedis(events);
+        } finally {
+            redisCacheManager.releaseLock(EVENTS_LOCK_KEY);
+        }
+    }
 
     public List<Event> getActiveEvents(LocalDateTime date) {
         List<Event> events = localCacheManager.getEventsLocalCache();

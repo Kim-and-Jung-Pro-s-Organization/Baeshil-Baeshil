@@ -22,7 +22,7 @@ import static pro.baeshilbaeshil.config.local_cache.ObjectMapperFactory.writeVal
 public class EventsCacheService {
 
     public static final String EVENTS_CACHE_KEY = "events";
-    public static final String EVENTS_LOCK_KEY = "events_lock";
+    public static final String EVENTS_LOCK_KEY = "events-lock";
 
     private final RedisCacheManager redisCacheManager;
 

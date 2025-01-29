@@ -6,6 +6,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
 
+import static pro.baeshilbaeshil.application.service.event.EventsLocalCacheService.EVENTS_LOCK_KEY;
+import static pro.baeshilbaeshil.config.local_cache.LocalCacheManager.EVENTS_CACHE_KEY;
+
 @RequiredArgsConstructor
 @Component
 public class RedisCacheManager {
@@ -17,6 +20,11 @@ public class RedisCacheManager {
     private static final String LOCK_VALUE = "locked";
 
     private final RedisTemplate<String, String> redisTemplate;
+
+    public void init() {
+        redisTemplate.delete(EVENTS_CACHE_KEY);
+        redisTemplate.delete(EVENTS_LOCK_KEY);
+    }
 
     public void cache(String key, String value) {
         redisTemplate.opsForValue().set(key, value);

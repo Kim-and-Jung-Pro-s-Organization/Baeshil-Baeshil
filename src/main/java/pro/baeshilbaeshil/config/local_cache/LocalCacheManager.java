@@ -5,14 +5,13 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import pro.baeshilbaeshil.application.domain.event.Event;
+import pro.baeshilbaeshil.config.RedisCacheManager;
 
 import java.time.Duration;
 import java.util.List;
 
-import static pro.baeshilbaeshil.application.service.event.EventsLocalCacheService.EVENTS_LOCK_KEY;
 import static pro.baeshilbaeshil.config.local_cache.ObjectMapperFactory.readValue;
 
 @RequiredArgsConstructor
@@ -22,8 +21,7 @@ public class LocalCacheManager {
     private static final String INVALIDATE_CACHE_CHANNEL = "invalidate-cache";
     public static final String EVENTS_CACHE_KEY = "events";
 
-    private final RedisTemplate<String, String> redisTemplate;
-
+    private final RedisCacheManager redisCacheManager;
     private final RedisPublisher redisPublisher;
     private final RedisSubscriber redisSubscriber;
 
@@ -31,14 +29,9 @@ public class LocalCacheManager {
 
     @PostConstruct
     public void init() {
-        initRedis();
+        redisCacheManager.init();
         setEventsCache();
         setSubscriberMessageListener();
-    }
-
-    private void initRedis() {
-        redisTemplate.delete(EVENTS_CACHE_KEY);
-        redisTemplate.delete(EVENTS_LOCK_KEY);
     }
 
     private static void setEventsCache() {
@@ -88,7 +81,7 @@ public class LocalCacheManager {
     }
 
     private <T> T loadFromRedis(String key, TypeReference<T> typeReference) {
-        String cachedValue = redisTemplate.opsForValue().get(key);
+        String cachedValue = redisCacheManager.get(key);
         if (cachedValue == null) {
             return null;
         }
