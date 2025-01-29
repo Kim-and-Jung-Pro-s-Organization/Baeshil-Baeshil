@@ -30,8 +30,8 @@ public class EventService {
         return GetEventsResponse.of(activeEvents);
     }
 
-    public GetEventsResponse getActiveEventsByRedisCache(LocalDateTime date) {
-        List<Event> activeEvents = eventsCacheService.getActiveEvents(date);
+    public GetEventsResponse getActiveEventsByRedisCache(LocalDateTime now) {
+        List<Event> activeEvents = eventsCacheService.getActiveEvents(now);
         return GetEventsResponse.of(activeEvents);
     }
 
