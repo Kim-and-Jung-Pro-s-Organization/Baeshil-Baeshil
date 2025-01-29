@@ -9,8 +9,9 @@ import pro.baeshilbaeshil.config.RedisCacheManager;
 import pro.baeshilbaeshil.config.local_cache.LocalCacheManager;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static pro.baeshilbaeshil.config.RedisCacheManager.MAX_RETRY_CNT;
 import static pro.baeshilbaeshil.config.RedisCacheManager.backoff;
@@ -28,7 +29,7 @@ public class EventsLocalCacheService {
 
     private final EventRepository eventRepository;
 
-    public void cacheEvents() {
+    public void cacheEvents(LocalDateTime now) {
         redisCacheManager.evict(EVENTS_CACHE_KEY);
         localCacheManager.publishInvalidateCacheMessage(EVENTS_CACHE_KEY);
 
@@ -37,31 +38,40 @@ public class EventsLocalCacheService {
             return;
         }
         try {
-            List<Event> events = loadFromDb();
+            List<Event> events = loadFromDb(now);
             cacheOnRedis(events);
         } finally {
             redisCacheManager.releaseLock(EVENTS_LOCK_KEY);
         }
     }
 
-    public List<Event> getActiveEvents(LocalDateTime date) {
+    public List<Event> getActiveEvents(LocalDateTime now) {
         List<Event> events = localCacheManager.getEventsLocalCache();
         // TODO: check TTL & update cache
         if (events == null) {
-            events = loadEvents();
+            events = loadEvents(now);
         }
-        return events.stream()
-                .filter(event -> event.isActive(date))
-                .collect(Collectors.toList());
+        return filterEvents(now, events);
     }
 
-    private List<Event> loadEvents() {
+    private static List<Event> filterEvents(LocalDateTime now, List<Event> events) {
+        List<Event> activeEvents = new ArrayList<>();
+        for (Event event : events) {
+            if (event.getBeginTime().isAfter(now)) {
+                return activeEvents;
+            }
+            activeEvents.add(event);
+        }
+        return activeEvents;
+    }
+
+    private List<Event> loadEvents(LocalDateTime now) {
         Boolean lockIsAcquired = redisCacheManager.tryLock(EVENTS_LOCK_KEY);
         if (lockIsAcquired.equals(Boolean.FALSE)) {
             return loadFromCache();
         }
         try {
-            List<Event> events = loadFromDb();
+            List<Event> events = loadFromDb(now);
             cacheOnRedis(events);
             return events;
         } finally {
@@ -84,7 +94,7 @@ public class EventsLocalCacheService {
         redisCacheManager.cache(EVENTS_CACHE_KEY, writeValueAsString(events));
     }
 
-    private List<Event> loadFromDb() {
-        return eventRepository.findAll();
+    private List<Event> loadFromDb(LocalDateTime now) {
+        return eventRepository.findValidEventsSortedByBeginTime(now);
     }
 }

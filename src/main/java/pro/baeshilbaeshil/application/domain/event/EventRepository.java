@@ -20,4 +20,13 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             """,
             nativeQuery = true)
     List<Event> findActiveEventsByIndexRangeScan(@Param("date") LocalDateTime date);
+
+    @Query(value = """
+            select *
+            from events e
+            where e.end_time >= :date
+            order by e.begin_time
+            """,
+            nativeQuery = true)
+    List<Event> findValidEventsSortedByBeginTime(@Param("date") LocalDateTime now);
 }

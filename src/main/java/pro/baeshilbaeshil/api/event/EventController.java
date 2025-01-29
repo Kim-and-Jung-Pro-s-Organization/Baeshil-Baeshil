@@ -9,6 +9,7 @@ import pro.baeshilbaeshil.application.service.dto.event.GetEventsResponse;
 import pro.baeshilbaeshil.application.service.event.EventService;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -18,41 +19,33 @@ public class EventController {
 
     @GetMapping("/api/v1/events")
     public ResponseEntity<GetEventsResponse> getActiveEvents(
-            @RequestParam("date") LocalDateTime date) {
-        if (date == null) {
-            date = LocalDateTime.now();
-        }
-        GetEventsResponse response = eventService.getActiveEvents(date);
+            @RequestParam(value = "date") Optional<LocalDateTime> date) {
+        LocalDateTime now = date.orElse(LocalDateTime.now());
+        GetEventsResponse response = eventService.getActiveEvents(now);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/api/v1/events-index")
     public ResponseEntity<GetEventsResponse> getActiveEventsByIndexRangeScan(
-            @RequestParam("date") LocalDateTime date) {
-        if (date == null) {
-            date = LocalDateTime.now();
-        }
-        GetEventsResponse response = eventService.getActiveEventsByIndexRangeScan(date);
+            @RequestParam(value = "date") Optional<LocalDateTime> date) {
+        LocalDateTime now = date.orElse(LocalDateTime.now());
+        GetEventsResponse response = eventService.getActiveEventsByIndexRangeScan(now);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/api/v1/events-redis")
     public ResponseEntity<GetEventsResponse> getActiveEventsByRedisCache(
-            @RequestParam("date") LocalDateTime date) {
-        if (date == null) {
-            date = LocalDateTime.now();
-        }
-        GetEventsResponse response = eventService.getActiveEventsByRedisCache(date);
+            @RequestParam(value = "date") Optional<LocalDateTime> date) {
+        LocalDateTime now = date.orElse(LocalDateTime.now());
+        GetEventsResponse response = eventService.getActiveEventsByRedisCache(now);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/api/v1/events-local-cache")
     public ResponseEntity<GetEventsResponse> getActiveEventsByLocalCache(
-            @RequestParam("date") LocalDateTime date) {
-        if (date == null) {
-            date = LocalDateTime.now();
-        }
-        GetEventsResponse response = eventService.getActiveEventsByLocalCache(date);
+            @RequestParam(value = "date") Optional<LocalDateTime> date) {
+        LocalDateTime now = date.orElse(LocalDateTime.now());
+        GetEventsResponse response = eventService.getActiveEventsByLocalCache(now);
         return ResponseEntity.ok(response);
     }
 }

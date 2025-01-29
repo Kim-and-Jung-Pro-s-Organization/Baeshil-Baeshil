@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import pro.baeshilbaeshil.application.domain.event.Event;
+import pro.baeshilbaeshil.application.service.dto.event.CreateEventResponse;
 import pro.baeshilbaeshil.application.service.dto.event.GetEventResponse;
 import pro.baeshilbaeshil.application.service.dto.event.GetEventsResponse;
 import pro.baeshilbaeshil.application.service.dto.product.CreateProductResponse;
@@ -46,7 +47,8 @@ public class EventAcceptanceTest extends AcceptanceTest {
                 description,
                 imageUrl,
                 beginTime,
-                endTime);
+                endTime,
+                date);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -75,8 +77,9 @@ public class EventAcceptanceTest extends AcceptanceTest {
                 description,
                 imageUrl,
                 beginTime,
-                endTime)
-                .as(CreateProductResponse.class).getId();
+                endTime,
+                date)
+                .as(CreateEventResponse.class).getId();
 
         String updatedName = "수정된_이벤트_이름";
         String updatedDescription = "수정된_이벤트_설명";
@@ -92,7 +95,8 @@ public class EventAcceptanceTest extends AcceptanceTest {
                 updatedDescription,
                 updatedImageUrl,
                 updatedBeginTime,
-                updatedEndTime);
+                updatedEndTime,
+                date);
 
         // then
         assertThat(result.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -131,7 +135,7 @@ public class EventAcceptanceTest extends AcceptanceTest {
                 activeEvent.getDescription(),
                 activeEvent.getImageUrl(),
                 activeEvent.getBeginTime(),
-                activeEvent.getEndTime())
+                activeEvent.getEndTime(), date)
                 .as(CreateProductResponse.class).getId();
 
         이벤트_등록_요청(
@@ -140,10 +144,10 @@ public class EventAcceptanceTest extends AcceptanceTest {
                 inactiveEvent.getDescription(),
                 inactiveEvent.getImageUrl(),
                 inactiveEvent.getBeginTime(),
-                inactiveEvent.getEndTime());
+                inactiveEvent.getEndTime(), date);
 
         // when
-        ExtractableResponse<Response> response = 이벤트_목록_조회_DB_Table_scan_요청(date);
+        ExtractableResponse<Response> response = 활성_이벤트_목록_조회_DB_Table_scan_요청(date);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -203,7 +207,7 @@ public class EventAcceptanceTest extends AcceptanceTest {
                 activeEvent.getDescription(),
                 activeEvent.getImageUrl(),
                 activeEvent.getBeginTime(),
-                activeEvent.getEndTime())
+                activeEvent.getEndTime(), date)
                 .as(CreateProductResponse.class).getId();
 
         이벤트_등록_요청(
@@ -212,10 +216,10 @@ public class EventAcceptanceTest extends AcceptanceTest {
                 inactiveEvent.getDescription(),
                 inactiveEvent.getImageUrl(),
                 inactiveEvent.getBeginTime(),
-                inactiveEvent.getEndTime());
+                inactiveEvent.getEndTime(), date);
 
         // when
-        ExtractableResponse<Response> response = 이벤트_목록_조회_DB_Index_range_scan_요청(date);
+        ExtractableResponse<Response> response = 활성_이벤트_목록_조회_DB_Index_range_scan_요청(date);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -275,8 +279,9 @@ public class EventAcceptanceTest extends AcceptanceTest {
                 activeEvent.getDescription(),
                 activeEvent.getImageUrl(),
                 activeEvent.getBeginTime(),
-                activeEvent.getEndTime())
-                .as(CreateProductResponse.class).getId();
+                activeEvent.getEndTime(),
+                date)
+                .as(CreateEventResponse.class).getId();
 
         이벤트_등록_요청(
                 productId,
@@ -284,10 +289,10 @@ public class EventAcceptanceTest extends AcceptanceTest {
                 inactiveEvent.getDescription(),
                 inactiveEvent.getImageUrl(),
                 inactiveEvent.getBeginTime(),
-                inactiveEvent.getEndTime());
+                inactiveEvent.getEndTime(), date);
 
         // when
-        ExtractableResponse<Response> response = 이벤트_목록_조회_Redis_cache_요청(date);
+        ExtractableResponse<Response> response = 활성_이벤트_목록_조회_Redis_cache_요청(date);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -349,7 +354,8 @@ public class EventAcceptanceTest extends AcceptanceTest {
             String description,
             String imageUrl,
             LocalDateTime beginTime,
-            LocalDateTime endTime) throws JsonProcessingException {
+            LocalDateTime endTime,
+            LocalDateTime date) throws JsonProcessingException {
 
         Map<String, Object> body = new HashMap<>();
         body.put("productId", productId);
@@ -362,6 +368,7 @@ public class EventAcceptanceTest extends AcceptanceTest {
         return RestAssured.given().log().all()
                 .body(objectMapper.writeValueAsString(body))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .queryParam("date", date.toString())
                 .when().post("/api-admin/v1/events")
                 .then().log().all()
                 .extract();
@@ -374,7 +381,8 @@ public class EventAcceptanceTest extends AcceptanceTest {
             String description,
             String imageUrl,
             LocalDateTime beginTime,
-            LocalDateTime endTime) throws JsonProcessingException {
+            LocalDateTime endTime,
+            LocalDateTime date) throws JsonProcessingException {
 
         Map<String, Object> body = new HashMap<>();
         body.put("id", eventId);
@@ -388,12 +396,13 @@ public class EventAcceptanceTest extends AcceptanceTest {
         return RestAssured.given().log().all()
                 .body(objectMapper.writeValueAsString(body))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .queryParam("date", date.toString())
                 .when().put("/api-admin/v1/events")
                 .then().log().all()
                 .extract();
     }
 
-    private static ExtractableResponse<Response> 이벤트_목록_조회_DB_Table_scan_요청(
+    private static ExtractableResponse<Response> 활성_이벤트_목록_조회_DB_Table_scan_요청(
             LocalDateTime date) {
         return RestAssured.given().log().all()
                 .param("date", date.toString())
@@ -402,7 +411,7 @@ public class EventAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> 이벤트_목록_조회_DB_Index_range_scan_요청(
+    private ExtractableResponse<Response> 활성_이벤트_목록_조회_DB_Index_range_scan_요청(
             LocalDateTime date) {
         return RestAssured.given().log().all()
                 .param("date", date.toString())
@@ -411,7 +420,7 @@ public class EventAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> 이벤트_목록_조회_Redis_cache_요청(
+    private ExtractableResponse<Response> 활성_이벤트_목록_조회_Redis_cache_요청(
             LocalDateTime date) {
         return RestAssured.given().log().all()
                 .param("date", date.toString())

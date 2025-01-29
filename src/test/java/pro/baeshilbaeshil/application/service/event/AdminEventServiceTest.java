@@ -42,7 +42,7 @@ class AdminEventServiceTest extends ServiceTest {
                 .build();
 
         // when
-        CreateEventResponse response = adminEventService.createEvent(request);
+        CreateEventResponse response = adminEventService.createEvent(request, date);
 
         // then
         Long eventId = response.getId();
@@ -82,12 +82,12 @@ class AdminEventServiceTest extends ServiceTest {
                 .build();
 
         // when
-        CreateEventResponse response = adminEventService.createEvent(request);
+        CreateEventResponse response = adminEventService.createEvent(request, date);
 
         // then
         Event event = eventRepository.findById(response.getId()).orElseThrow();
 
-        List<Event> cachedEvents = eventsCacheService.getEvents();
+        List<Event> cachedEvents = eventsCacheService.getEvents(date);
         assertThat(cachedEvents).isNotNull();
         assertThat(cachedEvents).extracting(
                         Event::getId,
@@ -131,7 +131,7 @@ class AdminEventServiceTest extends ServiceTest {
                 .build();
 
         // when, then
-        assertThatThrownBy(() -> adminEventService.createEvent(request))
+        assertThatThrownBy(() -> adminEventService.createEvent(request, date))
                 .isInstanceOf(NotFoundException.class);
     }
 
@@ -157,7 +157,7 @@ class AdminEventServiceTest extends ServiceTest {
                         .imageUrl(imageUrl)
                         .beginTime(beginTime)
                         .endTime(endTime)
-                        .build());
+                        .build(), date);
 
         Event event = eventRepository.findById(response.getId()).orElseThrow();
         Long eventId = event.getId();
@@ -179,7 +179,7 @@ class AdminEventServiceTest extends ServiceTest {
                 .build();
 
         // when
-        adminEventService.updateEvent(updateRequest);
+        adminEventService.updateEvent(updateRequest, date);
 
         // then
         Event updatedEvent = eventRepository.findById(eventId).orElseThrow();
@@ -214,7 +214,7 @@ class AdminEventServiceTest extends ServiceTest {
                         .imageUrl(imageUrl)
                         .beginTime(beginTime)
                         .endTime(endTime)
-                        .build());
+                        .build(), date);
 
         Event event = eventRepository.findById(response.getId()).orElseThrow();
         Long eventId = event.getId();
@@ -236,12 +236,12 @@ class AdminEventServiceTest extends ServiceTest {
                 .build();
 
         // when
-        adminEventService.updateEvent(updateRequest);
+        adminEventService.updateEvent(updateRequest, date);
 
         // then
         Event updatedEvent = eventRepository.findById(eventId).orElseThrow();
 
-        List<Event> cachedEvents = eventsCacheService.getEvents();
+        List<Event> cachedEvents = eventsCacheService.getEvents(date);
         assertThat(cachedEvents).isNotNull();
         assertThat(cachedEvents).extracting(
                         Event::getId,
