@@ -87,7 +87,7 @@ class AdminEventServiceTest extends ServiceTest {
         // then
         Event event = eventRepository.findById(response.getId()).orElseThrow();
 
-        List<Event> cachedEvents = eventCacheService.loadFromRedis();
+        List<Event> cachedEvents = eventCacheService.getEvents();
         assertThat(cachedEvents).isNotNull();
         assertThat(cachedEvents).extracting(
                         Event::getId,
@@ -241,7 +241,7 @@ class AdminEventServiceTest extends ServiceTest {
         // then
         Event updatedEvent = eventRepository.findById(eventId).orElseThrow();
 
-        List<Event> cachedEvents = eventCacheService.loadFromRedis();
+        List<Event> cachedEvents = eventCacheService.getEvents();
         assertThat(cachedEvents).isNotNull();
         assertThat(cachedEvents).extracting(
                         Event::getId,

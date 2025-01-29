@@ -2,14 +2,14 @@ package pro.baeshilbaeshil.application.service.event;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import pro.baeshilbaeshil.application.common.exception.CacheMissException;
 import pro.baeshilbaeshil.application.domain.event.Event;
 import pro.baeshilbaeshil.common.ServiceTest;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 class EventCacheServiceTest extends ServiceTest {
 
@@ -31,13 +31,10 @@ class EventCacheServiceTest extends ServiceTest {
         eventRepository.save(event);
 
         // when
-        assertThatThrownBy(() -> eventCacheService.loadFromRedis())
-                .isInstanceOf(CacheMissException.class);
-
         eventCacheService.cacheEvents();
 
         // then
-        List<Event> cachedEvents = eventCacheService.loadFromRedis();
+        List<Event> cachedEvents = eventCacheService.getEvents();
         assertThat(cachedEvents).isNotNull();
         assertThat(cachedEvents).extracting(
                         Event::getId,
@@ -97,7 +94,7 @@ class EventCacheServiceTest extends ServiceTest {
         eventCacheService.cacheEvents();
 
         // when
-        List<Event> cachedEvents = eventCacheService.loadFromRedis();
+        List<Event> cachedEvents = eventCacheService.getEvents();
 
         // then
         assertThat(cachedEvents).isNotNull();
