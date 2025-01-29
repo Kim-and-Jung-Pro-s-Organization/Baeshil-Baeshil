@@ -38,7 +38,7 @@ public class LocalCacheManager {
         eventsCache = Caffeine
                 .newBuilder()
                 .recordStats()
-                .expireAfterWrite(Duration.ZERO)
+                .expireAfterWrite(Duration.ofMinutes(10))
                 .maximumSize(1)
                 .build();
     }
@@ -68,7 +68,7 @@ public class LocalCacheManager {
             Cache<String, T> localCache,
             String key,
             TypeReference<T> typeReference) {
-        T cachedValue = localCache.get(key, k -> null);
+        T cachedValue = localCache.getIfPresent(key);
         if (cachedValue != null) {
             return cachedValue;
         }

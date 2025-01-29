@@ -10,7 +10,6 @@ import pro.baeshilbaeshil.config.local_cache.LocalCacheManager;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import static pro.baeshilbaeshil.config.RedisCacheManager.MAX_RETRY_CNT;
