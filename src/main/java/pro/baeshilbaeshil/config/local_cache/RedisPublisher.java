@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class RedisPublisher {
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
 
-    public void publish(String channel, Object message) {
+    public void publish(String channel, String message) {
         redisTemplate.convertAndSend(channel, message);
     }
 }

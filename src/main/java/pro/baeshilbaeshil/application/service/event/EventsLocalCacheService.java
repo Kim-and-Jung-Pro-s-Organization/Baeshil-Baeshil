@@ -1,6 +1,7 @@
 package pro.baeshilbaeshil.application.service.event;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import pro.baeshilbaeshil.application.common.exception.CacheMissException;
 import pro.baeshilbaeshil.application.domain.event.Event;
@@ -44,9 +45,13 @@ public class EventsLocalCacheService {
         }
     }
 
+    @Scheduled(cron = "0 0/10 * * * ?")
+    public void updateEventsCache() {
+        cacheEvents(LocalDateTime.now());
+    }
+
     public List<Event> getActiveEvents(LocalDateTime now) {
         List<Event> events = localCacheManager.getEventsLocalCache();
-        // TODO: check TTL & update cache
         if (events == null) {
             events = loadEvents(now);
         }
