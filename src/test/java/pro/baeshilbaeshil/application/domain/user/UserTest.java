@@ -2,6 +2,7 @@ package pro.baeshilbaeshil.application.domain.user;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import pro.baeshilbaeshil.application.fixture.user.UserFixture;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -14,10 +15,28 @@ class UserTest {
         String email = "nyangi@yaho.com";
 
         // when
-        User user = new User(email);
+        User user = User.builder()
+                .email(email)
+                .build();
 
         // then
         assertThat(user.getEmail()).isEqualTo(email);
         assertThat(user.getPoints()).isEqualTo(0);
+    }
+
+    @DisplayName("포인트를 적립한다.")
+    @Test
+    void addPoints() {
+        // given
+        User user = UserFixture.createUser();
+
+        int currentPoints = user.getPoints();
+        int pointsToAdd = 10;
+
+        // when
+        user.addPoints(pointsToAdd);
+
+        // then
+        assertThat(user.getPoints()).isEqualTo(currentPoints + pointsToAdd);
     }
 }

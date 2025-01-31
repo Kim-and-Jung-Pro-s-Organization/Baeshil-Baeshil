@@ -2,8 +2,10 @@ package pro.baeshilbaeshil.application.service.product;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import pro.baeshilbaeshil.application.common.exception.NotFoundException;
 import pro.baeshilbaeshil.application.domain.shop.Shop;
+import pro.baeshilbaeshil.application.fixture.shop.ShopFixture;
 import pro.baeshilbaeshil.application.service.dto.product.CreateProductRequest;
 import pro.baeshilbaeshil.application.service.dto.product.CreateProductResponse;
 import pro.baeshilbaeshil.common.ServiceTest;
@@ -13,17 +15,20 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class AdminProductServiceTest extends ServiceTest {
 
+    @Autowired
+    private AdminProductService adminProductService;
+
     @DisplayName("상품을 등록한다.")
     @Test
     void createProduct() {
         // given
-        Long shopId = createShop();
+        Shop shop = createShop();
         String name = "상품_이름";
         int price = 1000;
         String imageUrl = "http://image.url.jpg";
 
         CreateProductRequest request = CreateProductRequest.builder()
-                .shopId(shopId)
+                .shopId(shop.getId())
                 .name(name)
                 .price(price)
                 .imageUrl(imageUrl)
@@ -57,14 +62,7 @@ class AdminProductServiceTest extends ServiceTest {
                 .isInstanceOf(NotFoundException.class);
     }
 
-    private Long createShop() {
-        Shop shop = Shop.builder()
-                .name("가게_이름")
-                .description("가게_설명")
-                .address("가게_주소")
-                .build();
-
-        Shop savedShop = shopRepository.save(shop);
-        return savedShop.getId();
+    private Shop createShop() {
+        return shopRepository.save(ShopFixture.createShop());
     }
 }

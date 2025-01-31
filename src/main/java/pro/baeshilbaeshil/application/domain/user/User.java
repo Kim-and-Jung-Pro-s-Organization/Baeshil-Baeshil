@@ -1,17 +1,16 @@
 package pro.baeshilbaeshil.application.domain.user;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import pro.baeshilbaeshil.application.common.BaseEntity;
 
-@Entity
 @Getter
-@NoArgsConstructor
+@Entity
+@Table(name = "users")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity {
 
     @Id
@@ -25,5 +24,9 @@ public class User extends BaseEntity {
     @Builder
     private User(String email) {
         this.email = email;
+    }
+
+    public void addPoints(int pointsToAdd) {
+        this.points += pointsToAdd;
     }
 }

@@ -2,6 +2,7 @@ package pro.baeshilbaeshil.application.service.event;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import pro.baeshilbaeshil.application.domain.event.Event;
 import pro.baeshilbaeshil.common.ServiceTest;
 
@@ -12,6 +13,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
 class EventsCacheServiceTest extends ServiceTest {
+
+    @Autowired
+    private EventsCacheService eventsCacheService;
 
     @DisplayName("Redis에 이벤트 목록을 캐싱한다.")
     @Test

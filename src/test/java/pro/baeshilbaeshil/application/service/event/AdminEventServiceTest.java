@@ -2,10 +2,13 @@ package pro.baeshilbaeshil.application.service.event;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import pro.baeshilbaeshil.application.common.exception.NotFoundException;
 import pro.baeshilbaeshil.application.domain.event.Event;
 import pro.baeshilbaeshil.application.domain.product.Product;
 import pro.baeshilbaeshil.application.domain.shop.Shop;
+import pro.baeshilbaeshil.application.fixture.product.ProductFixture;
+import pro.baeshilbaeshil.application.fixture.shop.ShopFixture;
 import pro.baeshilbaeshil.application.service.dto.event.CreateEventRequest;
 import pro.baeshilbaeshil.application.service.dto.event.CreateEventResponse;
 import pro.baeshilbaeshil.application.service.dto.event.UpdateEventRequest;
@@ -18,12 +21,18 @@ import static org.assertj.core.api.Assertions.*;
 
 class AdminEventServiceTest extends ServiceTest {
 
+    @Autowired
+    private AdminEventService adminEventService;
+
+    @Autowired
+    private EventsCacheService eventsCacheService;
+
     @DisplayName("이벤트를 등록한다.")
     @Test
     void createEvent() {
         // given
-        Long shopId = createShop();
-        Long productId = createProduct(shopId);
+        Shop shop = createShop();
+        Product product = createProduct(shop);
 
         String name = "이벤트_이름";
         String description = "이벤트_설명";
@@ -33,7 +42,7 @@ class AdminEventServiceTest extends ServiceTest {
         LocalDateTime endTime = date.plusMonths(1);
 
         CreateEventRequest request = CreateEventRequest.builder()
-                .productId(productId)
+                .productId(product.getId())
                 .name(name)
                 .description(description)
                 .imageUrl(imageUrl)
@@ -50,7 +59,7 @@ class AdminEventServiceTest extends ServiceTest {
 
         Event event = eventRepository.findById(response.getId()).orElseThrow();
         assertThat(event.getId()).isEqualTo(eventId);
-        assertThat(event.getProductId()).isEqualTo(productId);
+        assertThat(event.getProductId()).isEqualTo(product.getId());
         assertThat(event.getName()).isEqualTo(name);
         assertThat(event.getDescription()).isEqualTo(description);
         assertThat(event.getImageUrl()).isEqualTo(imageUrl);
@@ -62,8 +71,8 @@ class AdminEventServiceTest extends ServiceTest {
     @Test
     void cacheEvent() {
         // given
-        Long shopId = createShop();
-        Long productId = createProduct(shopId);
+        Shop shop = createShop();
+        Product product = createProduct(shop);
 
         String name = "이벤트_이름";
         String description = "이벤트_설명";
@@ -73,7 +82,7 @@ class AdminEventServiceTest extends ServiceTest {
         LocalDateTime endTime = date.plusMonths(1);
 
         CreateEventRequest request = CreateEventRequest.builder()
-                .productId(productId)
+                .productId(product.getId())
                 .name(name)
                 .description(description)
                 .imageUrl(imageUrl)
@@ -139,8 +148,9 @@ class AdminEventServiceTest extends ServiceTest {
     @Test
     void updateEvent() {
         // given
-        Long shopId = createShop();
-        Long productId = createProduct(shopId);
+        Shop shop = createShop();
+        Product product = createProduct(shop);
+        Long productId = product.getId();
 
         String name = "이벤트_이름";
         String description = "이벤트_설명";
@@ -196,8 +206,9 @@ class AdminEventServiceTest extends ServiceTest {
     @Test
     void updateEventCache() {
         // given
-        Long shopId = createShop();
-        Long productId = createProduct(shopId);
+        Shop shop = createShop();
+        Product product = createProduct(shop);
+        Long productId = product.getId();
 
         String name = "이벤트_이름";
         String description = "이벤트_설명";
@@ -262,26 +273,11 @@ class AdminEventServiceTest extends ServiceTest {
                                 updatedEvent.getEndTime()));
     }
 
-    private Long createShop() {
-        Shop shop = Shop.builder()
-                .name("가게_이름")
-                .description("가게_설명")
-                .address("가게_주소")
-                .build();
-
-        Shop savedShop = shopRepository.save(shop);
-        return savedShop.getId();
+    private Shop createShop() {
+        return shopRepository.save(ShopFixture.createShop());
     }
 
-    private Long createProduct(Long shopId) {
-        Product product = Product.builder()
-                .shopId(shopId)
-                .name("상품_이름")
-                .price(1000)
-                .imageUrl("http://image.url.jpg")
-                .build();
-
-        Product savedProduct = productRepository.save(product);
-        return savedProduct.getId();
+    private Product createProduct(Shop shop) {
+        return productRepository.save(ProductFixture.createProduct(shop));
     }
 }

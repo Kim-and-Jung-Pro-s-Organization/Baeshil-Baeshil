@@ -18,7 +18,7 @@ import static pro.baeshilbaeshil.config.local_cache.ObjectMapperFactory.readValu
 @Component
 public class LocalCacheManager {
 
-    private static final String INVALIDATE_CACHE_CHANNEL = "invalidate-cache";
+    private static final String INVALIDATE_CACHE_CHANNEL = "invalidate -cache";
     public static final String EVENTS_CACHE_KEY = "events";
 
     private final RedisCacheManager redisCacheManager;
