@@ -1,6 +1,7 @@
 package pro.baeshilbaeshil.application.service.point;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pro.baeshilbaeshil.application.common.exception.NotFoundException;
@@ -33,6 +34,11 @@ public class PointService {
     public final RedisCacheManager redisCacheManager;
 
     private final UserRepository userRepository;
+
+    @Scheduled(cron = "0 0 0 * * *")
+    public void initUserCnt() {
+        redisCacheManager.cache(USER_CNT_KEY, "0");
+    }
 
     @Transactional
     public AddPointResponse addPoints(Long userId) {
