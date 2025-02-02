@@ -1,4 +1,4 @@
-package pro.baeshilbaeshil.config;
+package pro.baeshilbaeshil.config.redis;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,8 +12,6 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import pro.baeshilbaeshil.config.local_cache.GzipRedisSerializer;
-import pro.baeshilbaeshil.config.local_cache.ObjectMapperFactory;
 
 @EnableCaching
 @Configuration

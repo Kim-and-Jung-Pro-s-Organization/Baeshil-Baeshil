@@ -8,14 +8,14 @@ import pro.baeshilbaeshil.application.domain.event.EventRepository;
 import pro.baeshilbaeshil.application.domain.product.ProductRepository;
 import pro.baeshilbaeshil.application.domain.shop.ShopRepository;
 import pro.baeshilbaeshil.application.domain.user.UserRepository;
-import pro.baeshilbaeshil.config.RedisCacheManager;
+import pro.baeshilbaeshil.application.infra.cache.CacheManager;
 
 @ActiveProfiles("test")
 @SpringBootTest
 public abstract class ServiceTest {
 
     @Autowired
-    protected RedisCacheManager redisCacheManager;
+    protected CacheManager cacheManager;
 
     @Autowired
     protected UserRepository userRepository;
@@ -34,7 +34,7 @@ public abstract class ServiceTest {
 
     @BeforeEach
     protected void setUp() {
-        redisCacheManager.init();
+        cacheManager.init();
         databaseCleanup.execute();
     }
 }

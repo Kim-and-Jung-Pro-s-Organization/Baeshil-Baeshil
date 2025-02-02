@@ -36,8 +36,8 @@ class PointServiceTest extends ServiceTest {
         assertThat(updatedUser.getPoints()).isEqualTo(currentPoints + PointService.POINTS_TO_ADD);
 
         String userKey = PointService.POINT_ACQUIRED_USER_KEY_PREFIX + user.getId();
-        assertThat(redisCacheManager.get(userKey)).isEqualTo(PointService.POINT_ACQUIRED_USER_VALUE);
-        assertThat(redisCacheManager.get(PointService.USER_CNT_KEY)).isEqualTo(String.valueOf(userCntToAcquirePoints));
+        assertThat(cacheManager.get(userKey)).isEqualTo(PointService.POINT_ACQUIRED_USER_VALUE);
+        assertThat(cacheManager.get(PointService.USER_CNT_KEY)).isEqualTo(String.valueOf(userCntToAcquirePoints));
     }
 
     @DisplayName("포인트를 적립할 회원이 존재하지 않는다면 예외가 발생한다.")

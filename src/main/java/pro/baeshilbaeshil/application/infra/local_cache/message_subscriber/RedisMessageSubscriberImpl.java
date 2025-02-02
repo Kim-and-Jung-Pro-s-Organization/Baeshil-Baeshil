@@ -1,4 +1,4 @@
-package pro.baeshilbaeshil.config.local_cache;
+package pro.baeshilbaeshil.application.infra.local_cache.message_subscriber;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.MessageListener;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class RedisSubscriber {
+public class RedisMessageSubscriberImpl implements MessageSubscriber {
 
     private final RedisMessageListenerContainer redisMessageListenerContainer;
 

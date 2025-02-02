@@ -6,16 +6,16 @@ import org.springframework.stereotype.Service;
 import pro.baeshilbaeshil.application.common.exception.CacheMissException;
 import pro.baeshilbaeshil.application.domain.event.Event;
 import pro.baeshilbaeshil.application.domain.event.EventRepository;
-import pro.baeshilbaeshil.config.RedisCacheManager;
+import pro.baeshilbaeshil.application.infra.cache.CacheManager;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static pro.baeshilbaeshil.config.RedisCacheManager.MAX_RETRY_CNT;
-import static pro.baeshilbaeshil.config.RedisCacheManager.backoff;
-import static pro.baeshilbaeshil.config.local_cache.ObjectMapperFactory.readValue;
-import static pro.baeshilbaeshil.config.local_cache.ObjectMapperFactory.writeValueAsString;
+import static pro.baeshilbaeshil.application.infra.cache.CacheManager.MAX_RETRY_CNT;
+import static pro.baeshilbaeshil.application.infra.cache.CacheManager.backoff;
+import static pro.baeshilbaeshil.config.redis.ObjectMapperFactory.readValue;
+import static pro.baeshilbaeshil.config.redis.ObjectMapperFactory.writeValueAsString;
 
 @RequiredArgsConstructor
 @Service
@@ -24,27 +24,27 @@ public class EventsCacheService {
     public static final String EVENTS_CACHE_KEY = "events";
     public static final String EVENTS_LOCK_KEY = "events-lock";
 
-    private final RedisCacheManager redisCacheManager;
+    private final CacheManager cacheManager;
 
     private final EventRepository eventRepository;
 
     public void cacheEvents(LocalDateTime now) {
-        redisCacheManager.evict(EVENTS_CACHE_KEY);
+        cacheManager.evict(EVENTS_CACHE_KEY);
 
-        Boolean lockIsAcquired = redisCacheManager.tryLock(EVENTS_LOCK_KEY);
+        Boolean lockIsAcquired = cacheManager.tryLock(EVENTS_LOCK_KEY);
         if (lockIsAcquired.equals(Boolean.FALSE)) {
             return;
         }
         try {
             List<Event> events = loadFromDb(now);
-            cacheOnRedis(events);
+            cache(events);
         } finally {
-            redisCacheManager.releaseLock(EVENTS_LOCK_KEY);
+            cacheManager.releaseLock(EVENTS_LOCK_KEY);
         }
     }
 
     public List<Event> getEvents(LocalDateTime now) {
-        List<Event> events = loadFromRedis();
+        List<Event> events = loadFromCache();
         if (events == null) {
             events = loadEvents(now);
         }
@@ -52,7 +52,7 @@ public class EventsCacheService {
     }
 
     public List<Event> getActiveEvents(LocalDateTime now) {
-        List<Event> events = loadFromRedis();
+        List<Event> events = loadFromCache();
         if (events == null) {
             events = loadEvents(now);
         }
@@ -70,8 +70,8 @@ public class EventsCacheService {
         return activeEvents;
     }
 
-    private List<Event> loadFromRedis() {
-        String value = redisCacheManager.get(EVENTS_CACHE_KEY);
+    private List<Event> loadFromCache() {
+        String value = cacheManager.get(EVENTS_CACHE_KEY);
         if (value == null) {
             return null;
         }
@@ -85,22 +85,22 @@ public class EventsCacheService {
     }
 
     private List<Event> loadEvents(LocalDateTime now) {
-        Boolean lockIsAcquired = redisCacheManager.tryLock(EVENTS_LOCK_KEY);
+        Boolean lockIsAcquired = cacheManager.tryLock(EVENTS_LOCK_KEY);
         if (lockIsAcquired.equals(Boolean.FALSE)) {
-            return retryLoadFromRedis();
+            return retryLoadFromCache();
         }
         try {
             List<Event> events = loadFromDb(now);
-            cacheOnRedis(events);
+            cache(events);
             return events;
         } finally {
-            redisCacheManager.releaseLock(EVENTS_LOCK_KEY);
+            cacheManager.releaseLock(EVENTS_LOCK_KEY);
         }
     }
 
-    private List<Event> retryLoadFromRedis() {
+    private List<Event> retryLoadFromCache() {
         for (int attempt = 0; attempt < MAX_RETRY_CNT; attempt++) {
-            List<Event> events = loadFromRedis();
+            List<Event> events = loadFromCache();
             if (events != null) {
                 return events;
             }
@@ -109,8 +109,8 @@ public class EventsCacheService {
         throw new CacheMissException();
     }
 
-    private void cacheOnRedis(List<Event> events) {
-        redisCacheManager.cache(EVENTS_CACHE_KEY, writeValueAsString(events));
+    private void cache(List<Event> events) {
+        cacheManager.cache(EVENTS_CACHE_KEY, writeValueAsString(events));
     }
 
     private List<Event> loadFromDb(LocalDateTime now) {

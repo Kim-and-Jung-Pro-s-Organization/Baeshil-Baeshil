@@ -1,4 +1,4 @@
-package pro.baeshilbaeshil.config.local_cache;
+package pro.baeshilbaeshil.application.infra.local_cache;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.benmanes.caffeine.cache.Cache;
@@ -7,29 +7,31 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import pro.baeshilbaeshil.application.domain.event.Event;
-import pro.baeshilbaeshil.config.RedisCacheManager;
+import pro.baeshilbaeshil.application.infra.cache.CacheManager;
+import pro.baeshilbaeshil.application.infra.local_cache.message_publisher.MessagePublisher;
+import pro.baeshilbaeshil.application.infra.local_cache.message_subscriber.MessageSubscriber;
 
 import java.time.Duration;
 import java.util.List;
 
-import static pro.baeshilbaeshil.config.local_cache.ObjectMapperFactory.readValue;
+import static pro.baeshilbaeshil.config.redis.ObjectMapperFactory.readValue;
 
 @RequiredArgsConstructor
 @Component
 public class LocalCacheManager {
 
-    private static final String INVALIDATE_CACHE_CHANNEL = "invalidate -cache";
+    private static final String INVALIDATE_CACHE_CHANNEL = "invalidate-cache";
     public static final String EVENTS_CACHE_KEY = "events";
 
-    private final RedisCacheManager redisCacheManager;
-    private final RedisPublisher redisPublisher;
-    private final RedisSubscriber redisSubscriber;
+    private final CacheManager cacheManager;
+    private final MessagePublisher messagePublisher;
+    private final MessageSubscriber messageSubscriber;
 
     private static Cache<String, List<Event>> eventsCache;
 
     @PostConstruct
     public void init() {
-        redisCacheManager.init();
+        cacheManager.init();
         setEventsCache();
         setSubscriberMessageListener();
     }
@@ -44,7 +46,7 @@ public class LocalCacheManager {
     }
 
     private void setSubscriberMessageListener() {
-        redisSubscriber.addMessageListener(
+        messageSubscriber.addMessageListener(
                 INVALIDATE_CACHE_CHANNEL,
                 (message, pattern) -> invalidateCache(new String(message.getBody())));
     }
@@ -56,7 +58,7 @@ public class LocalCacheManager {
     }
 
     public void publishInvalidateCacheMessage(String cacheName) {
-        redisPublisher.publish(INVALIDATE_CACHE_CHANNEL, cacheName);
+        messagePublisher.publish(INVALIDATE_CACHE_CHANNEL, cacheName);
     }
 
     public List<Event> getEventsLocalCache() {
@@ -72,7 +74,7 @@ public class LocalCacheManager {
         if (cachedValue != null) {
             return cachedValue;
         }
-        cachedValue = loadFromRedis(key, typeReference);
+        cachedValue = loadFromCache(key, typeReference);
         if (cachedValue == null) {
             return null;
         }
@@ -80,8 +82,8 @@ public class LocalCacheManager {
         return cachedValue;
     }
 
-    private <T> T loadFromRedis(String key, TypeReference<T> typeReference) {
-        String cachedValue = redisCacheManager.get(key);
+    private <T> T loadFromCache(String key, TypeReference<T> typeReference) {
+        String cachedValue = cacheManager.get(key);
         if (cachedValue == null) {
             return null;
         }

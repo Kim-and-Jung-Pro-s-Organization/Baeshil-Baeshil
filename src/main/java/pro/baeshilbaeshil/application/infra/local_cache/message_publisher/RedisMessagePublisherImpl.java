@@ -1,4 +1,4 @@
-package pro.baeshilbaeshil.config.local_cache;
+package pro.baeshilbaeshil.application.infra.local_cache.message_publisher;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class RedisPublisher {
+public class RedisMessagePublisherImpl implements MessagePublisher {
 
     private final RedisTemplate<String, String> redisTemplate;
 

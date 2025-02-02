@@ -8,8 +8,8 @@ import pro.baeshilbaeshil.application.common.exception.NotFoundException;
 import pro.baeshilbaeshil.application.common.exception.PointAddFailureException;
 import pro.baeshilbaeshil.application.domain.user.User;
 import pro.baeshilbaeshil.application.domain.user.UserRepository;
+import pro.baeshilbaeshil.application.infra.cache.CacheManager;
 import pro.baeshilbaeshil.application.service.dto.point.AddPointResponse;
-import pro.baeshilbaeshil.config.RedisCacheManager;
 
 import java.util.Arrays;
 
@@ -31,13 +31,13 @@ public class PointService {
     public static final String POINT_ACQUIRED_USER_KEY_PREFIX = "points:user-id:";
     public static final String POINT_ACQUIRED_USER_VALUE = "point-acquired";
 
-    public final RedisCacheManager redisCacheManager;
+    public final CacheManager cacheManager;
 
     private final UserRepository userRepository;
 
     @Scheduled(cron = "0 0 0 * * *")
     public void initUserCnt() {
-        redisCacheManager.cache(USER_CNT_KEY, "0");
+        cacheManager.cache(USER_CNT_KEY, "0");
     }
 
     @Transactional
@@ -58,7 +58,7 @@ public class PointService {
     }
 
     private PointAcquireStatus tryAcquirePoint(User user) {
-        String script = String.format("""
+        String luaScript = String.format("""
                         local userKey = KEYS[2]
                         if redis.call('EXISTS', userKey) == 1 then return %d end
                         
@@ -77,8 +77,8 @@ public class PointService {
                 PointAcquireStatus.SUCCEED.getStatus());
 
         String userKey = POINT_ACQUIRED_USER_KEY_PREFIX + user.getId();
-        return PointAcquireStatus.of(redisCacheManager.executeLuaScript(
-                script,
+        return PointAcquireStatus.of(cacheManager.execute(
+                luaScript,
                 Arrays.asList(USER_CNT_KEY, userKey),
                 MAX_USERS_TO_GET_POINTS_PER_DAY,
                 POINT_ACQUIRED_USER_VALUE));
@@ -97,7 +97,7 @@ public class PointService {
     }
 
     private void rollbackRedis(Long userId) {
-        String script = """
+        String luaScript = """
                 local userCntKey = KEYS[1]
                 redis.call('DECR', userCntKey)
                 
@@ -106,8 +106,8 @@ public class PointService {
                 """;
 
         String userKey = POINT_ACQUIRED_USER_KEY_PREFIX + userId;
-        redisCacheManager.executeLuaScript(
-                script,
+        cacheManager.execute(
+                luaScript,
                 Arrays.asList(USER_CNT_KEY, userKey));
     }
 

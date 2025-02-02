@@ -1,4 +1,4 @@
-package pro.baeshilbaeshil.config.local_cache;
+package pro.baeshilbaeshil.config.redis;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -17,7 +17,7 @@ class EventsCacheServiceTest extends ServiceTest {
     @Autowired
     private EventsCacheService eventsCacheService;
 
-    @DisplayName("Redis에 이벤트 목록을 캐싱한다.")
+    @DisplayName("이벤트 목록을 캐싱한다.")
     @Test
     void cacheEvents() {
         // given
@@ -58,7 +58,7 @@ class EventsCacheServiceTest extends ServiceTest {
                         event.getEndTime()));
     }
 
-    @DisplayName("Redis에 캐싱된 이벤트 목록을 조회한다.")
+    @DisplayName("캐싱된 이벤트 목록을 조회한다.")
     @Test
     void loadFromRedis() {
         // given
