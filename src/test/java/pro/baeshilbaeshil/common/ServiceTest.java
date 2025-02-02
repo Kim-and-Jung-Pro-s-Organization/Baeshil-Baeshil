@@ -29,13 +29,12 @@ public abstract class ServiceTest {
     @Autowired
     protected EventRepository eventRepository;
 
+    @Autowired
+    private DatabaseCleanup databaseCleanup;
+
     @BeforeEach
     protected void setUp() {
         redisCacheManager.init();
-
-        userRepository.deleteAllInBatch();
-        eventRepository.deleteAllInBatch();
-        productRepository.deleteAllInBatch();
-        shopRepository.deleteAllInBatch();
+        databaseCleanup.execute();
     }
 }

@@ -28,7 +28,7 @@ public class EventsCacheService {
 
     private final EventRepository eventRepository;
 
-    public void cacheEvents() {
+    public void cacheEvents(LocalDateTime now) {
         redisCacheManager.evict(EVENTS_CACHE_KEY);
 
         Boolean lockIsAcquired = redisCacheManager.tryLock(EVENTS_LOCK_KEY);
@@ -36,7 +36,7 @@ public class EventsCacheService {
             return;
         }
         try {
-            List<Event> events = loadFromDb(LocalDateTime.now());
+            List<Event> events = loadFromDb(now);
             cacheOnRedis(events);
         } finally {
             redisCacheManager.releaseLock(EVENTS_LOCK_KEY);

@@ -35,10 +35,10 @@ class EventsCacheServiceTest extends ServiceTest {
         eventRepository.save(event);
 
         // when
-        eventsCacheService.cacheEvents();
+        eventsCacheService.cacheEvents(date);
 
         // then
-        List<Event> cachedEvents = eventsCacheService.getEvents(LocalDateTime.now());
+        List<Event> cachedEvents = eventsCacheService.getEvents(date);
         assertThat(cachedEvents).isNotNull();
         assertThat(cachedEvents).extracting(
                         Event::getId,
@@ -95,10 +95,10 @@ class EventsCacheServiceTest extends ServiceTest {
         eventRepository.save(event2);
         eventRepository.save(event3);
 
-        eventsCacheService.cacheEvents();
+        eventsCacheService.cacheEvents(date);
 
         // when
-        List<Event> cachedEvents = eventsCacheService.getEvents(LocalDateTime.now());
+        List<Event> cachedEvents = eventsCacheService.getEvents(date);
 
         // then
         assertThat(cachedEvents).isNotNull();
@@ -175,7 +175,7 @@ class EventsCacheServiceTest extends ServiceTest {
         Event savedActiveEvent2 = eventRepository.save(activeEvent2);
         eventRepository.save(inactiveEvent);
 
-        eventsCacheService.cacheEvents();
+        eventsCacheService.cacheEvents(date);
 
         // when
         List<Event> activeEvents = eventsCacheService.getActiveEvents(date);
