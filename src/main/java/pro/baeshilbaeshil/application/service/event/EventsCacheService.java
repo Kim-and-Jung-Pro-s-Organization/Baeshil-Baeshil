@@ -17,8 +17,8 @@ import static pro.baeshilbaeshil.application.infra.cache.CacheManager.backoff;
 import static pro.baeshilbaeshil.config.redis.ObjectMapperFactory.readValue;
 import static pro.baeshilbaeshil.config.redis.ObjectMapperFactory.writeValueAsString;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class EventsCacheService {
 
     public static final String EVENTS_CACHE_KEY = "events";

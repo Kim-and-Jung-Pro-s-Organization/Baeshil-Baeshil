@@ -10,9 +10,9 @@ import pro.baeshilbaeshil.application.service.dto.event.GetEventsResponse;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-@Service
 public class EventService {
 
     private final EventsCacheService eventsCacheService;

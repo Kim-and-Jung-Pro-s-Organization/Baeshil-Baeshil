@@ -7,8 +7,8 @@ import pro.baeshilbaeshil.application.domain.user.User;
 import pro.baeshilbaeshil.application.domain.user.UserRepository;
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class DevUserService {
 
     private final UserRepository userRepository;

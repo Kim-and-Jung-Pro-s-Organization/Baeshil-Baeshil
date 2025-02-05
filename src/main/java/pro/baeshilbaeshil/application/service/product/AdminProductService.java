@@ -12,8 +12,8 @@ import pro.baeshilbaeshil.application.service.dto.product.CreateProductResponse;
 
 import static pro.baeshilbaeshil.application.common.exception_type.ShopExceptionType.NO_SUCH_SHOP;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AdminProductService {
 
@@ -23,8 +23,7 @@ public class AdminProductService {
     @Transactional
     public CreateProductResponse createProduct(CreateProductRequest request) {
         Long shopId = request.getShopId();
-        shopRepository.findById(shopId)
-                .orElseThrow(() -> new NotFoundException(NO_SUCH_SHOP));
+        findShopById(shopId);
 
         Product product = Product.builder()
                 .shopId(shopId)
@@ -35,5 +34,10 @@ public class AdminProductService {
 
         Product savedProduct = productRepository.save(product);
         return CreateProductResponse.of(savedProduct);
+    }
+
+    private void findShopById(Long shopId) {
+        shopRepository.findById(shopId)
+                .orElseThrow(() -> new NotFoundException(NO_SUCH_SHOP));
     }
 }

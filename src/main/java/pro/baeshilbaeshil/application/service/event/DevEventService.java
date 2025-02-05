@@ -11,8 +11,8 @@ import java.time.ZoneOffset;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class DevEventService {
 
     private final EventRepository eventRepository;

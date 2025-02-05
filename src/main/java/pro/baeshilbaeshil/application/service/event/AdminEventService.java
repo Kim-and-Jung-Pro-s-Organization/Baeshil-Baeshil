@@ -17,9 +17,9 @@ import java.time.LocalDateTime;
 import static pro.baeshilbaeshil.application.common.exception_type.EventExceptionType.NO_SUCH_EVENT;
 import static pro.baeshilbaeshil.application.common.exception_type.ProductExceptionType.NO_SUCH_PRODUCT;
 
+@Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-@Service
 public class AdminEventService {
 
     private final EventsLocalCacheService eventsLocalCacheService;

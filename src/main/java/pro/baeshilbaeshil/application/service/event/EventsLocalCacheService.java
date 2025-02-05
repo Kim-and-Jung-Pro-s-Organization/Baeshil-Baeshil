@@ -18,8 +18,8 @@ import static pro.baeshilbaeshil.application.infra.cache.CacheManager.backoff;
 import static pro.baeshilbaeshil.application.infra.local_cache.LocalCacheManager.EVENTS_CACHE_KEY;
 import static pro.baeshilbaeshil.config.redis.ObjectMapperFactory.writeValueAsString;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class EventsLocalCacheService {
 
     public static final String EVENTS_LOCK_KEY = "events-lock";
@@ -32,14 +32,17 @@ public class EventsLocalCacheService {
     public void cacheEvents(LocalDateTime now) {
         cacheManager.evict(EVENTS_CACHE_KEY);
         localCacheManager.publishInvalidateCacheMessage(EVENTS_CACHE_KEY);
+        cache(now);
+    }
 
+    private void cache(LocalDateTime now) {
         Boolean lockIsAcquired = cacheManager.tryLock(EVENTS_LOCK_KEY);
         if (lockIsAcquired.equals(Boolean.FALSE)) {
             return;
         }
         try {
             List<Event> events = loadFromDb(now);
-            cache(events);
+            cacheManager.cache(EVENTS_CACHE_KEY, writeValueAsString(events));
         } finally {
             cacheManager.releaseLock(EVENTS_LOCK_KEY);
         }
@@ -76,7 +79,7 @@ public class EventsLocalCacheService {
         }
         try {
             List<Event> events = loadFromDb(now);
-            cache(events);
+            cacheManager.cache(EVENTS_CACHE_KEY, writeValueAsString(events));
             return events;
         } finally {
             cacheManager.releaseLock(EVENTS_LOCK_KEY);
@@ -92,10 +95,6 @@ public class EventsLocalCacheService {
             backoff(attempt);
         }
         throw new CacheMissException();
-    }
-
-    private void cache(List<Event> events) {
-        cacheManager.cache(EVENTS_CACHE_KEY, writeValueAsString(events));
     }
 
     private List<Event> loadFromDb(LocalDateTime now) {

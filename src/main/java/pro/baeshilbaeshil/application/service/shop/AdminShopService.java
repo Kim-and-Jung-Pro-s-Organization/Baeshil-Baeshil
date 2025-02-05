@@ -8,8 +8,8 @@ import pro.baeshilbaeshil.application.domain.shop.ShopRepository;
 import pro.baeshilbaeshil.application.service.dto.shop.CreateShopRequest;
 import pro.baeshilbaeshil.application.service.dto.shop.CreateShopResponse;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AdminShopService {
 
