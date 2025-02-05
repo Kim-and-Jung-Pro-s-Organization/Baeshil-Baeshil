@@ -27,17 +27,17 @@ public class LocalCacheManager {
     private final MessagePublisher messagePublisher;
     private final MessageSubscriber messageSubscriber;
 
-    private static Cache<String, List<Event>> eventsCache;
+    private static Cache<String, List<Event>> eventsLocalCache;
 
     @PostConstruct
     public void init() {
         cacheManager.init();
-        setEventsCache();
+        setEventsLocalCache();
         setSubscriberMessageListener();
     }
 
-    private static void setEventsCache() {
-        eventsCache = Caffeine
+    private static void setEventsLocalCache() {
+        eventsLocalCache = Caffeine
                 .newBuilder()
                 .recordStats()
                 .expireAfterWrite(Duration.ofMinutes(10))
@@ -53,7 +53,7 @@ public class LocalCacheManager {
 
     private void invalidateCache(String message) {
         if (message.equals(EVENTS_CACHE_KEY)) {
-            eventsCache.invalidate(message);
+            eventsLocalCache.invalidate(message);
         }
     }
 
@@ -62,7 +62,7 @@ public class LocalCacheManager {
     }
 
     public List<Event> getEventsLocalCache() {
-        return getLocalCache(eventsCache, EVENTS_CACHE_KEY, new TypeReference<>() {
+        return getLocalCache(eventsLocalCache, EVENTS_CACHE_KEY, new TypeReference<>() {
         });
     }
 
