@@ -11,8 +11,7 @@ import pro.baeshilbaeshil.application.infra.cache.CacheManager;
 
 import java.util.Arrays;
 
-import static pro.baeshilbaeshil.application.common.exception_type.PointExceptionType.*;
-import static pro.baeshilbaeshil.application.common.exception_type.UserExceptionType.NO_SUCH_USER;
+import static pro.baeshilbaeshil.application.common.exception_type.BaseExceptionTypeImpl.*;
 import static pro.baeshilbaeshil.application.service.point.PointAcquireStatus.ALREADY_ADDED_FAILURE;
 import static pro.baeshilbaeshil.application.service.point.PointAcquireStatus.DAILY_LIMIT_EXCEEDED_FAILURE;
 

@@ -1,5 +1,6 @@
 package pro.baeshilbaeshil.application.service.dto.product;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,12 +10,28 @@ import pro.baeshilbaeshil.application.domain.product.Product;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GetProductResponse {
 
+    @Schema(description = "상품 ID",
+            example = "1")
     private Long id;
+
+    @Schema(description = "상점 ID",
+            example = "1")
     private Long shopId;
 
+    @Schema(description = "상품 이름",
+            example = "냥기")
     private String name;
+
+    @Schema(description = "상품 가격",
+            example = "1000")
     private int price;
+
+    @Schema(description = "상품 좋아요 수",
+            example = "100")
     private int likes;
+
+    @Schema(description = "상품 이미지 URL",
+            example = "https://example.com/nyanggi-image.jpg")
     private String imageUrl;
 
     public GetProductResponse(

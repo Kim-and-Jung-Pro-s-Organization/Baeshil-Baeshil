@@ -23,6 +23,12 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
+import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
+import static pro.baeshilbaeshil.common.ApiDocumentUtils.getDocumentRequest;
+import static pro.baeshilbaeshil.common.ApiDocumentUtils.getDocumentResponse;
 
 public class EventAcceptanceTest extends AcceptanceTest {
 
@@ -365,7 +371,24 @@ public class EventAcceptanceTest extends AcceptanceTest {
         body.put("beginTime", beginTime);
         body.put("endTime", endTime);
 
-        return RestAssured.given().log().all()
+        return RestAssured.given(documentationSpec).log().all()
+                .filter(document("create-event",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("productId").description("이벤트를 등록할 상품 ID"),
+                                fieldWithPath("name").description("이벤트 이름"),
+                                fieldWithPath("description").description("이벤트 설명"),
+                                fieldWithPath("imageUrl").description("이벤트 이미지 URL"),
+                                fieldWithPath("beginTime").description("이벤트 시작 시간 (yyyy-MM-dd'T'HH:mm:ss)"),
+                                fieldWithPath("endTime").description("이벤트 종료 시간 (yyyy-MM-dd'T'HH:mm:ss)")
+                        ),
+                        queryParameters(
+                                parameterWithName("date").description("기준 날짜 (yyyy-MM-dd'T'HH:mm:ss)")
+                        ),
+                        responseFields(
+                                fieldWithPath("id").description("생성된 이벤트 ID")
+                        )))
                 .body(objectMapper.writeValueAsString(body))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .queryParam("date", date.toString())

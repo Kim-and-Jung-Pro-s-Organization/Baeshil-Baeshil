@@ -1,5 +1,6 @@
 package pro.baeshilbaeshil.application.service.dto.event;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import pro.baeshilbaeshil.application.domain.event.Event;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CreateEventResponse {
 
+    @Schema(description = "생성된 이벤트 ID", example = "1")
     private Long id;
 
     @Builder

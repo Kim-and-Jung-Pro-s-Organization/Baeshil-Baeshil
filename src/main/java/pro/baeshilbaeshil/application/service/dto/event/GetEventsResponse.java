@@ -1,5 +1,6 @@
 package pro.baeshilbaeshil.application.service.dto.event;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GetEventsResponse {
 
+    @Schema(description = "이벤트 목록")
     private List<GetEventResponse> events;
 
     @Builder
