@@ -1,5 +1,6 @@
 package pro.baeshilbaeshil.application.service.dto.product;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,6 +11,8 @@ import pro.baeshilbaeshil.application.domain.product.Product;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CreateProductResponse {
 
+    @Schema(description = "상품 ID",
+            example = "1")
     private Long id;
 
     @Builder

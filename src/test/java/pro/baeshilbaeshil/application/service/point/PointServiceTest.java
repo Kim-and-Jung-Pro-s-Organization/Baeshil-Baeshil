@@ -10,9 +10,7 @@ import pro.baeshilbaeshil.common.ServiceTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static pro.baeshilbaeshil.application.common.exception_type.PointExceptionType.DAILY_LIMIT_EXCEEDED;
-import static pro.baeshilbaeshil.application.common.exception_type.PointExceptionType.POINTS_ALREADY_ADDED;
-import static pro.baeshilbaeshil.application.common.exception_type.UserExceptionType.NO_SUCH_USER;
+import static pro.baeshilbaeshil.application.common.exception_type.BaseExceptionTypeImpl.*;
 import static pro.baeshilbaeshil.application.fixture.user.UserFixture.createUser;
 
 class PointServiceTest extends ServiceTest {

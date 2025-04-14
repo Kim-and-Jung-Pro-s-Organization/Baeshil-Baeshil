@@ -1,5 +1,6 @@
 package pro.baeshilbaeshil.application.service.dto.product;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GetProductsResponse {
 
+    @Schema(description = "상품 목록")
     private List<GetProductResponse> products;
 
     public GetProductsResponse(List<GetProductResponse> products) {

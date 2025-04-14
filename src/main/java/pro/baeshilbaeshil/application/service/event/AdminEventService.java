@@ -14,8 +14,8 @@ import pro.baeshilbaeshil.application.service.dto.event.UpdateEventRequest;
 
 import java.time.LocalDateTime;
 
-import static pro.baeshilbaeshil.application.common.exception_type.EventExceptionType.NO_SUCH_EVENT;
-import static pro.baeshilbaeshil.application.common.exception_type.ProductExceptionType.NO_SUCH_PRODUCT;
+import static pro.baeshilbaeshil.application.common.exception_type.BaseExceptionTypeImpl.NO_SUCH_EVENT;
+import static pro.baeshilbaeshil.application.common.exception_type.BaseExceptionTypeImpl.NO_SUCH_PRODUCT;
 
 @Service
 @RequiredArgsConstructor
