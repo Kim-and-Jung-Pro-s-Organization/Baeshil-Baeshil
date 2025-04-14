@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 import pro.baeshilbaeshil.application.common.BaseEntity;
 import pro.baeshilbaeshil.application.common.exception.InvalidArgumentException;
 
-import static pro.baeshilbaeshil.application.common.exception_type.ProductExceptionType.INVALID_PRODUCT_NAME;
-import static pro.baeshilbaeshil.application.common.exception_type.ProductExceptionType.INVALID_PRODUCT_PRICE;
+import static pro.baeshilbaeshil.application.common.exception_type.BaseExceptionTypeImpl.INVALID_PRODUCT_NAME;
+import static pro.baeshilbaeshil.application.common.exception_type.BaseExceptionTypeImpl.INVALID_PRODUCT_PRICE;
 
 @Getter
 @Entity

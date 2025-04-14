@@ -11,7 +11,7 @@ import pro.baeshilbaeshil.application.common.exception.InvalidArgumentException;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import static pro.baeshilbaeshil.application.common.exception_type.EventExceptionType.*;
+import static pro.baeshilbaeshil.application.common.exception_type.BaseExceptionTypeImpl.*;
 
 @Getter
 @Entity

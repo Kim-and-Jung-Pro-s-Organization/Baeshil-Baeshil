@@ -10,7 +10,7 @@ import pro.baeshilbaeshil.application.domain.shop.ShopRepository;
 import pro.baeshilbaeshil.application.service.dto.product.CreateProductRequest;
 import pro.baeshilbaeshil.application.service.dto.product.CreateProductResponse;
 
-import static pro.baeshilbaeshil.application.common.exception_type.ShopExceptionType.NO_SUCH_SHOP;
+import static pro.baeshilbaeshil.application.common.exception_type.BaseExceptionTypeImpl.NO_SUCH_SHOP;
 
 @Service
 @RequiredArgsConstructor
