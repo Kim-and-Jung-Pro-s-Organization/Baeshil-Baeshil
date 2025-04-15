@@ -18,6 +18,9 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Clean up Docker to prevent no space error
+        run: docker system prune --all --force
+
       - name: Make application-dev.yml
         run: |
           cd ./src/main/resources
@@ -28,7 +31,7 @@ jobs:
       - name: Grant execute permisson for gradlew
         run: chmod +x gradlew
 
-      - name: Build with Gradle (without Test)
+      - name: Build with Gradle (without test)
         run: ./gradlew clean build -x test --stacktrace
 
       - name: Docker Hub build & push
