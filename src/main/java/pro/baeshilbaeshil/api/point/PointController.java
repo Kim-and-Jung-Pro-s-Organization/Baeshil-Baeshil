@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pro.baeshilbaeshil.api.annotation.ApiErrorCodes;
+import pro.baeshilbaeshil.api.common.annotation.ApiErrorCodes;
 import pro.baeshilbaeshil.application.service.point.PointService;
 
 import static pro.baeshilbaeshil.application.common.exception_type.BaseExceptionTypeImpl.*;

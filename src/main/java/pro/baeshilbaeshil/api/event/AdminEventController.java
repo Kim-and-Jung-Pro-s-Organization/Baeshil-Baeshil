@@ -7,7 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pro.baeshilbaeshil.api.annotation.ApiErrorCodes;
+import pro.baeshilbaeshil.api.common.annotation.ApiErrorCodes;
 import pro.baeshilbaeshil.application.service.dto.event.CreateEventRequest;
 import pro.baeshilbaeshil.application.service.dto.event.CreateEventResponse;
 import pro.baeshilbaeshil.application.service.dto.event.UpdateEventRequest;

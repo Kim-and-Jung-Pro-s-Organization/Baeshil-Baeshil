@@ -10,7 +10,7 @@ import io.swagger.v3.oas.models.responses.ApiResponses;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import pro.baeshilbaeshil.api.annotation.ApiErrorCodes;
+import pro.baeshilbaeshil.api.common.annotation.ApiErrorCodes;
 import pro.baeshilbaeshil.application.common.exception_type.BaseExceptionType;
 
 import java.util.Arrays;

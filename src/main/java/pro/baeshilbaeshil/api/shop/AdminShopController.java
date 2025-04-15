@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import pro.baeshilbaeshil.api.annotation.ApiErrorCodes;
+import pro.baeshilbaeshil.api.common.annotation.ApiErrorCodes;
 import pro.baeshilbaeshil.application.service.dto.shop.CreateShopRequest;
 import pro.baeshilbaeshil.application.service.dto.shop.CreateShopResponse;
 import pro.baeshilbaeshil.application.service.shop.AdminShopService;

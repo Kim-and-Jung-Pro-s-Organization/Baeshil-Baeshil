@@ -1,4 +1,4 @@
-package pro.baeshilbaeshil.api.annotation;
+package pro.baeshilbaeshil.api.common.annotation;
 
 import pro.baeshilbaeshil.application.common.exception_type.BaseExceptionTypeImpl;
 
