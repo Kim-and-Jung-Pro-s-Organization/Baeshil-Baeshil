@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pro.baeshilbaeshil.application.common.exception.NotFoundException;
 import pro.baeshilbaeshil.application.common.exception.PointAddFailureException;
 import pro.baeshilbaeshil.application.domain.user.User;
+import pro.baeshilbaeshil.application.domain.user.UserRepository;
 import pro.baeshilbaeshil.common.ServiceTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,6 +18,9 @@ class PointServiceTest extends ServiceTest {
 
     @Autowired
     private PointService pointService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @DisplayName("포인트를 적립한다.")
     @Test

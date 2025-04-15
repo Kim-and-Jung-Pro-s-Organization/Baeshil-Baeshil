@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import pro.baeshilbaeshil.application.domain.event.Event;
+import pro.baeshilbaeshil.application.domain.event.EventRepository;
 import pro.baeshilbaeshil.common.ServiceTest;
 
 import java.time.LocalDateTime;
@@ -16,6 +17,9 @@ class EventsLocalCacheServiceTest extends ServiceTest {
 
     @Autowired
     private EventsLocalCacheService eventsLocalCacheService;
+
+    @Autowired
+    private EventRepository eventRepository;
 
     @DisplayName("캐싱된 이벤트 목록을 조회하여 활성화된 이벤트 목록을 추출한다.")
     @Test

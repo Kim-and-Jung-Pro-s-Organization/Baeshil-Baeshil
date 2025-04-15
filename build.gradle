@@ -2,8 +2,6 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.4.1'
     id 'io.spring.dependency-management' version '1.1.7'
-    id 'org.asciidoctor.jvm.convert' version '3.3.2'
-    id 'com.epages.restdocs-api-spec' version '0.18.2'
 }
 
 group = 'pro'
@@ -64,39 +62,10 @@ dependencies {
     testImplementation 'io.rest-assured:rest-assured:5.3.0'
     implementation 'com.google.guava:guava:32.0.1-android'
 
-    // Spring REST Docs
-    testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
-    testImplementation 'com.epages:restdocs-api-spec-restassured:0.18.2'
-
     // Swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
-    outputs.dir snippetsDir
-}
-
-asciidoctor {
-    baseDirFollowsSourceFile()
-    inputs.dir snippetsDir
-    dependsOn test
-    attributes('snippets': snippetsDir)
-    sources {
-        include 'index.adoc'
-    }
-}
-
-asciidoctor.doFirst {
-    delete file('src/main/resources/static/docs')
-}
-
-tasks.register('syncDocs', Copy) {
-    dependsOn asciidoctor
-    from asciidoctor.outputDir
-    into file('src/main/resources/static/docs')
-}
-
-tasks.named('build') {
-    dependsOn 'syncDocs'
 }

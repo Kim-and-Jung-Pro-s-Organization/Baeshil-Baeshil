@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import pro.baeshilbaeshil.application.domain.user.User;
+import pro.baeshilbaeshil.application.domain.user.UserRepository;
 import pro.baeshilbaeshil.application.fixture.user.UserFixture;
 import pro.baeshilbaeshil.common.ServiceTest;
 
@@ -18,6 +19,9 @@ public class PointServiceConcurrencyTest extends ServiceTest {
 
     @Autowired
     private PointService pointService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Test
     @DisplayName("여러 회원이 포인트 적립을 동시에 요청한다.")

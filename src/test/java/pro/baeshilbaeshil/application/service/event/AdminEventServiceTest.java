@@ -5,8 +5,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import pro.baeshilbaeshil.application.common.exception.NotFoundException;
 import pro.baeshilbaeshil.application.domain.event.Event;
+import pro.baeshilbaeshil.application.domain.event.EventRepository;
 import pro.baeshilbaeshil.application.domain.product.Product;
+import pro.baeshilbaeshil.application.domain.product.ProductRepository;
 import pro.baeshilbaeshil.application.domain.shop.Shop;
+import pro.baeshilbaeshil.application.domain.shop.ShopRepository;
 import pro.baeshilbaeshil.application.fixture.product.ProductFixture;
 import pro.baeshilbaeshil.application.fixture.shop.ShopFixture;
 import pro.baeshilbaeshil.application.service.dto.event.CreateEventRequest;
@@ -26,6 +29,15 @@ class AdminEventServiceTest extends ServiceTest {
 
     @Autowired
     private EventsCacheService eventsCacheService;
+
+    @Autowired
+    private EventRepository eventRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private ShopRepository shopRepository;
 
     @DisplayName("이벤트를 등록한다.")
     @Test

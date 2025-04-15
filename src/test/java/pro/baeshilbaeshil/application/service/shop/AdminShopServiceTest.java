@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import pro.baeshilbaeshil.application.domain.shop.Shop;
+import pro.baeshilbaeshil.application.domain.shop.ShopRepository;
 import pro.baeshilbaeshil.application.service.dto.shop.CreateShopRequest;
 import pro.baeshilbaeshil.common.ServiceTest;
 
@@ -16,6 +17,9 @@ public class AdminShopServiceTest extends ServiceTest {
 
     @Autowired
     private AdminShopService adminShopService;
+
+    @Autowired
+    private ShopRepository shopRepository;
 
     @DisplayName("가게를 등록한다.")
     @Test

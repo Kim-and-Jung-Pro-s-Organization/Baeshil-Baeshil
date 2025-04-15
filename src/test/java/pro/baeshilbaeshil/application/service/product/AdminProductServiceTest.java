@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import pro.baeshilbaeshil.application.common.exception.NotFoundException;
 import pro.baeshilbaeshil.application.domain.shop.Shop;
+import pro.baeshilbaeshil.application.domain.shop.ShopRepository;
 import pro.baeshilbaeshil.application.fixture.shop.ShopFixture;
 import pro.baeshilbaeshil.application.service.dto.product.CreateProductRequest;
 import pro.baeshilbaeshil.application.service.dto.product.CreateProductResponse;
@@ -17,6 +18,9 @@ class AdminProductServiceTest extends ServiceTest {
 
     @Autowired
     private AdminProductService adminProductService;
+
+    @Autowired
+    private ShopRepository shopRepository;
 
     @DisplayName("상품을 등록한다.")
     @Test
