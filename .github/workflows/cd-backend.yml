@@ -18,9 +18,6 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Clean up Docker to prevent no space error
-        run: docker system prune --all --force
-
       - name: Make application-dev.yml
         run: |
           cd ./src/main/resources
@@ -49,7 +46,7 @@ jobs:
           key: ${{ secrets.WAS_KEY }}
           port: ${{ secrets.WAS_SSH_PORT }}
           script: |
-            docker system prune -a -f
+            sudo docker system prune --all --force
             cd /home/ubuntu/BaeshilBaeshil/
             sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
             sudo docker rm -f $(sudo docker ps -qa)
