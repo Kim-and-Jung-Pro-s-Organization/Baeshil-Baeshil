@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import pro.baeshilbaeshil.application.domain.event.Event;
 import pro.baeshilbaeshil.application.domain.event.EventRepository;
+import pro.baeshilbaeshil.application.service.event.cache.EventsCacheService;
 import pro.baeshilbaeshil.common.ServiceTest;
 
 import java.time.LocalDateTime;
@@ -39,7 +40,7 @@ class EventsCacheServiceTest extends ServiceTest {
         eventRepository.save(event);
 
         // when
-        eventsCacheService.cacheEvents(date);
+        eventsCacheService.refresh(date);
 
         // then
         List<Event> cachedEvents = eventsCacheService.getEvents(date);
@@ -99,7 +100,7 @@ class EventsCacheServiceTest extends ServiceTest {
         eventRepository.save(event2);
         eventRepository.save(event3);
 
-        eventsCacheService.cacheEvents(date);
+        eventsCacheService.refresh(date);
 
         // when
         List<Event> cachedEvents = eventsCacheService.getEvents(date);
@@ -179,7 +180,7 @@ class EventsCacheServiceTest extends ServiceTest {
         Event savedActiveEvent2 = eventRepository.save(activeEvent2);
         eventRepository.save(inactiveEvent);
 
-        eventsCacheService.cacheEvents(date);
+        eventsCacheService.refresh(date);
 
         // when
         List<Event> activeEvents = eventsCacheService.getActiveEvents(date);

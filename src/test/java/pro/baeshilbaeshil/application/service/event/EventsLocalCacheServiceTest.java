@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import pro.baeshilbaeshil.application.domain.event.Event;
 import pro.baeshilbaeshil.application.domain.event.EventRepository;
+import pro.baeshilbaeshil.application.service.event.cache.EventsLocalCacheService;
 import pro.baeshilbaeshil.common.ServiceTest;
 
 import java.time.LocalDateTime;

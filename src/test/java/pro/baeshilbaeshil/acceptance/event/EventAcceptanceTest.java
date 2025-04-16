@@ -319,6 +319,79 @@ public class EventAcceptanceTest extends AcceptanceTest {
                 );
     }
 
+    @DisplayName("Local cache 요청을 통해 활성화된 이벤트 목록을 조회한다.")
+    @Test
+    void getActiveEventsByLocalCache() throws JsonProcessingException {
+        // given
+        Long shopId = 가게_등록_요청().as(CreateShopResponse.class).getId();
+        Long productId = 상품_등록_요청(shopId).as(CreateProductResponse.class).getId();
+
+        LocalDateTime date = LocalDateTime.of(2025, 1, 1, 0, 0, 0);
+
+        Event activeEvent = Event.builder()
+                .productId(1L)
+                .name("활성_이벤트_이름_1")
+                .description("활성_이벤트_설명_1")
+                .imageUrl("http://localhost:8080/image_1")
+                .beginTime(date)
+                .endTime(date.plusMonths(1))
+                .build();
+
+        Event inactiveEvent = Event.builder()
+                .productId(2L)
+                .name("비활성_이벤트_이름")
+                .description("비활성_이벤트_설명")
+                .imageUrl("http://localhost:8080/image")
+                .beginTime(date.minusMonths(2))
+                .endTime(date.minusMonths(1))
+                .build();
+
+        Long activeEventId = 이벤트_등록_요청(
+                productId,
+                activeEvent.getName(),
+                activeEvent.getDescription(),
+                activeEvent.getImageUrl(),
+                activeEvent.getBeginTime(),
+                activeEvent.getEndTime(),
+                date)
+                .as(CreateEventResponse.class).getId();
+
+        이벤트_등록_요청(
+                productId,
+                inactiveEvent.getName(),
+                inactiveEvent.getDescription(),
+                inactiveEvent.getImageUrl(),
+                inactiveEvent.getBeginTime(),
+                inactiveEvent.getEndTime(), date);
+
+        // when
+        ExtractableResponse<Response> response = 활성_이벤트_목록_조회_Local_cache_요청(date);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        List<GetEventResponse> events = response.as(GetEventsResponse.class).getEvents();
+        assertThat(events)
+                .hasSize(1)
+                .extracting(
+                        GetEventResponse::getId,
+                        GetEventResponse::getName,
+                        GetEventResponse::getDescription,
+                        GetEventResponse::getImageUrl,
+                        GetEventResponse::getBeginTime,
+                        GetEventResponse::getEndTime
+                ).containsExactlyInAnyOrder(
+                        tuple(
+                                activeEventId,
+                                activeEvent.getName(),
+                                activeEvent.getDescription(),
+                                activeEvent.getImageUrl(),
+                                activeEvent.getBeginTime(),
+                                activeEvent.getEndTime()
+                        )
+                );
+    }
+
     private ExtractableResponse<Response> 가게_등록_요청() throws JsonProcessingException {
         Map<String, Object> body = new HashMap<>();
         body.put("name", "가게_이름");
@@ -425,6 +498,15 @@ public class EventAcceptanceTest extends AcceptanceTest {
         return RestAssured.given().log().all()
                 .param("date", date.toString())
                 .when().get("/api/v1/events-redis")
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> 활성_이벤트_목록_조회_Local_cache_요청(
+            LocalDateTime date) {
+        return RestAssured.given().log().all()
+                .param("date", date.toString())
+                .when().get("/api/v1/events-local-cache")
                 .then().log().all()
                 .extract();
     }

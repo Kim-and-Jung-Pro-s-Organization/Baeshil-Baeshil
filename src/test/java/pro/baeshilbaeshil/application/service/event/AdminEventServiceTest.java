@@ -15,6 +15,7 @@ import pro.baeshilbaeshil.application.fixture.shop.ShopFixture;
 import pro.baeshilbaeshil.application.service.dto.event.CreateEventRequest;
 import pro.baeshilbaeshil.application.service.dto.event.CreateEventResponse;
 import pro.baeshilbaeshil.application.service.dto.event.UpdateEventRequest;
+import pro.baeshilbaeshil.application.service.event.cache.EventsCacheService;
 import pro.baeshilbaeshil.common.ServiceTest;
 
 import java.time.LocalDateTime;

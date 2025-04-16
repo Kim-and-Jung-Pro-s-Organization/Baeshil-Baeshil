@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Objects;
 
-@RequiredArgsConstructor
 @Component
+@RequiredArgsConstructor
 public class RedisCacheManagerImpl implements CacheManager {
 
     private static final String LOCK_VALUE = "locked";
