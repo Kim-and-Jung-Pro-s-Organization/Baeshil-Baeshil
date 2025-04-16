@@ -3,7 +3,7 @@ package pro.baeshilbaeshil.application.service.event.cache;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import pro.baeshilbaeshil.application.common.annotation.Retry;
+import pro.baeshilbaeshil.application.common.executor.RetryExecutor;
 import pro.baeshilbaeshil.application.domain.event.Event;
 import pro.baeshilbaeshil.application.service.event.cache.manager.EventsCacheManager;
 import pro.baeshilbaeshil.application.service.event.cache.manager.EventsLocalCacheManger;
@@ -16,8 +16,9 @@ import java.util.List;
 public class EventsLocalCacheService {
 
     private final EventsLocalCacheManger eventsLocalCacheManger;
-
     private final EventsCacheManager eventsCacheManager;
+
+    private final RetryExecutor retryExecutor;
 
     @Scheduled(cron = "0 0/10 * * * ?")
     public void refreshOnSchedule() {
@@ -29,10 +30,11 @@ public class EventsLocalCacheService {
         eventsLocalCacheManger.evict();
     }
 
-    @Retry
     public List<Event> getActiveEvents(LocalDateTime now) {
-        List<Event> events = loadWithFallback(now);
-        return EventsUtils.activeAt(events, now);
+        return retryExecutor.runWithRetry(() -> {
+            List<Event> events = loadWithFallback(now);
+            return EventsUtils.activeAt(events, now);
+        });
     }
 
     private List<Event> loadWithFallback(LocalDateTime now) {

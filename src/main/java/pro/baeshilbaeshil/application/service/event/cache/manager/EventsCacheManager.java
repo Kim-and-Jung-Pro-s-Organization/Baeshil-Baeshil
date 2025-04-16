@@ -3,7 +3,7 @@ package pro.baeshilbaeshil.application.service.event.cache.manager;
 import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import pro.baeshilbaeshil.application.common.annotation.DistributedLock;
+import pro.baeshilbaeshil.application.common.executor.DistributedLockExecutor;
 import pro.baeshilbaeshil.application.domain.event.Event;
 import pro.baeshilbaeshil.application.domain.event.EventRepository;
 import pro.baeshilbaeshil.application.infra.cache.CacheManager;
@@ -23,19 +23,23 @@ public class EventsCacheManager {
 
     private final CacheManager cacheManager;
 
+    private final DistributedLockExecutor distributedLockExecutor;
+
     private final EventRepository eventRepository;
 
-    @DistributedLock(key = EVENTS_LOCK_KEY)
     public void refresh(LocalDateTime now) {
-        cacheManager.evict(EVENTS_CACHE_KEY);
-        loadAndCache(now);
+        distributedLockExecutor.runWithLock(EVENTS_LOCK_KEY, () -> {
+            cacheManager.evict(EVENTS_CACHE_KEY);
+            loadAndCache(now);
+        });
     }
 
-    @DistributedLock(key = EVENTS_LOCK_KEY)
     public List<Event> loadAndCache(LocalDateTime now) {
-        List<Event> events = loadValidEventsFromDb(now);
-        cache(events);
-        return events;
+        return distributedLockExecutor.runWithLock(EVENTS_LOCK_KEY, () -> {
+            List<Event> events = loadValidEventsFromDb(now);
+            cache(events);
+            return events;
+        });
     }
 
     public List<Event> load() {

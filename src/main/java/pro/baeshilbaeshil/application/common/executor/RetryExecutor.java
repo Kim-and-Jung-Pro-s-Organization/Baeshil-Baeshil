@@ -1,28 +1,21 @@
-package pro.baeshilbaeshil.application.common.aop;
+package pro.baeshilbaeshil.application.common.executor;
 
-import lombok.RequiredArgsConstructor;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
-import pro.baeshilbaeshil.application.common.annotation.Retry;
 import pro.baeshilbaeshil.application.common.exception.MaxRetryExceededException;
 
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
-@Aspect
 @Component
-@RequiredArgsConstructor
-public class RetryAspect {
+public class RetryExecutor {
 
     int MAX_RETRY_CNT = 10;
     int INITIAL_DELAY_MSEC = 1_000;
     int MAX_DELAY_MSEC = 100_000;
 
-    @Around("@annotation(retry)")
-    public Object retry(ProceedingJoinPoint joinPoint, Retry retry) throws Throwable {
+    public <T> T runWithRetry(Supplier<T> task) {
         for (int attempt = 0; attempt < MAX_RETRY_CNT; attempt++) {
-            Object result = joinPoint.proceed();
+            T result = task.get();
             if (result != null) {
                 return result;
             }
