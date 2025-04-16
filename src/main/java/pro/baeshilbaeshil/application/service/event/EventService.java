@@ -6,6 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import pro.baeshilbaeshil.application.domain.event.Event;
 import pro.baeshilbaeshil.application.domain.event.EventRepository;
 import pro.baeshilbaeshil.application.service.dto.event.GetEventsResponse;
+import pro.baeshilbaeshil.application.service.event.cache.EventsCacheService;
+import pro.baeshilbaeshil.application.service.event.cache.EventsLocalCacheService;
 
 import java.time.LocalDateTime;
 import java.util.List;

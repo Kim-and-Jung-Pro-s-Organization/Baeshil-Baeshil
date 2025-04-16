@@ -11,6 +11,7 @@ import pro.baeshilbaeshil.application.domain.product.ProductRepository;
 import pro.baeshilbaeshil.application.service.dto.event.CreateEventRequest;
 import pro.baeshilbaeshil.application.service.dto.event.CreateEventResponse;
 import pro.baeshilbaeshil.application.service.dto.event.UpdateEventRequest;
+import pro.baeshilbaeshil.application.service.event.cache.EventsLocalCacheService;
 
 import java.time.LocalDateTime;
 
@@ -42,7 +43,7 @@ public class AdminEventService {
                 .build();
 
         Event savedEvent = eventRepository.save(event);
-        eventsLocalCacheService.cacheEvents(now);
+        eventsLocalCacheService.refresh(now);
         return CreateEventResponse.of(savedEvent);
     }
 
@@ -62,7 +63,7 @@ public class AdminEventService {
                 request.getEndTime());
 
         eventRepository.save(event);
-        eventsLocalCacheService.cacheEvents(now);
+        eventsLocalCacheService.refresh(now);
     }
 
     private void validateProductId(Long productId) {
