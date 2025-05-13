@@ -30,7 +30,8 @@ public class EventsCacheManager {
     public void refresh(LocalDateTime now) {
         distributedLockExecutor.runWithLock(EVENTS_LOCK_KEY, () -> {
             cacheManager.evict(EVENTS_CACHE_KEY);
-            loadAndCache(now);
+            List<Event> events = loadValidEventsFromDb(now);
+            cache(events);
         });
     }
 

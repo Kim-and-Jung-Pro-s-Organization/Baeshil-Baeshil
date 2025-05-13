@@ -33,7 +33,6 @@ public class EventsCacheService {
 
     public List<Event> getActiveEvents(LocalDateTime now) {
         return retryExecutor.runWithRetry(() -> {
-
             List<Event> events = eventsCacheManager.load();
             if (events == null) {
                 events = eventsCacheManager.loadAndCache(now);
